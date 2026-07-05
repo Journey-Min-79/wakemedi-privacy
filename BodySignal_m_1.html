@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BodySignal Mockup v2 (Improved Design)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700;800&display=swap');
+
+    :root {
+      --bg: #f4f7fb;
+      --paper: rgba(250, 252, 255, 0.78);
+      --panel: rgba(255, 255, 255, 0.92);
+      --panel-2: rgba(233, 240, 247, 0.88);
+      --line: rgba(88, 115, 148, 0.16);
+      --text: #142236;
+      --muted: #66768b;
+      --mint: #16c7ad;
+      --mint-deep: #0e8578;
+      --mint-soft: #d6f8f1;
+      --coral: #ff7f66;
+      --blue: #5f7dff;
+      --yellow: #f4ae43;
+      --shadow: 0 26px 60px rgba(7, 18, 34, 0.16);
+      --shadow-sm: 0 16px 32px rgba(17, 33, 58, 0.08);
+      --radius-xl: 32px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --phone-w: 390px;
+      --phone-h: 844px;
+      --transition-ease: all 0.24s ease;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(104, 134, 255, 0.34), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(22, 199, 173, 0.24), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(255, 127, 102, 0.18), transparent 26%),
+        linear-gradient(145deg, #06111f 0%, #0c1b2e 46%, #122742 100%);
+    }
+
+    body {
+      position: relative;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(18px);
+      pointer-events: none;
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    body::before {
+      top: 80px;
+      left: -120px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(22, 199, 173, 0.42), transparent 68%);
+    }
+
+    body::after {
+      right: -80px;
+      bottom: 40px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(255, 127, 102, 0.3), transparent 66%);
+    }
+
+    button {
+      font: inherit;
+      border: 0;
+      cursor: pointer;
+      background: none;
+      color: inherit;
+      transition: var(--transition-ease);
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      width: min(1520px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr) 340px;
+      gap: 24px;
+      align-items: start;
+      border-radius: 38px;
+      background: rgba(7, 18, 34, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(20px);
+    }
+
+    .sidebar,
+    .context,
+    .hero-card,
+    .right-panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(246, 250, 255, 0.76));
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(18px);
+    }
+
+    .sidebar,
+    .right-panel {
+      position: sticky;
+      top: 24px;
+      padding: 24px;
+      border-radius: var(--radius-xl);
+      max-height: calc(100vh - 48px);
+      overflow-y: auto;
+    }
+
+    .sidebar::-webkit-scrollbar,
+    .right-panel::-webkit-scrollbar,
+    .screen::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb,
+    .right-panel::-webkit-scrollbar-thumb,
+    .screen::-webkit-scrollbar-thumb {
+      background: rgba(103, 121, 146, 0.34);
+      border-radius: 999px;
+    }
+
+    .brand {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(87, 113, 145, 0.14);
+    }
+
+    .brand-label {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(95, 125, 255, 0.18), rgba(22, 199, 173, 0.24));
+      color: #27448a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .group + .group {
+      margin-top: 24px;
+    }
+
+    .group-title {
+      margin: 0 0 12px;
+      padding: 0 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #56667d;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .screen-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .screen-link {
+      width: 100%;
+      text-align: left;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(240, 245, 251, 0.92);
+      border: 1px solid rgba(125, 147, 177, 0.1);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    .screen-link:hover {
+      transform: translateY(-2px) scale(1.01);
+      background: #fff;
+      border-color: rgba(22, 199, 173, 0.44);
+      box-shadow: 0 14px 28px rgba(23, 41, 68, 0.08);
+    }
+
+    .screen-link.active {
+      background: linear-gradient(135deg, rgba(214, 248, 241, 0.96), rgba(229, 241, 255, 0.94));
+      border-color: rgba(22, 199, 173, 0.38);
+      color: var(--mint-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(17, 32, 56, 0.1);
+    }
+
+    .screen-link strong,
+    .screen-link span {
+      display: block;
+    }
+
+    .screen-link strong {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .screen-link span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .center {
+      min-width: 0;
+    }
+
+    .hero-card {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
+      gap: 22px;
+      padding: 34px 36px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.18), transparent 24%),
+        linear-gradient(135deg, #102742 0%, #183761 45%, #0da896 100%);
+      color: #fff;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-inner h2 {
+      margin: 18px 0 12px;
+      font-size: clamp(36px, 4vw, 54px);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-inner p {
+      margin: 0;
+      max-width: 760px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .hero-preview {
+      padding: 20px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-preview strong,
+    .hero-preview span {
+      display: block;
+    }
+
+    .hero-preview strong {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .hero-preview span {
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .hero-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hero-preview-tile {
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(5, 17, 30, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-preview-tile strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-preview-tile span {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .meta-chip {
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(12px);
+    }
+
+    .meta-chip span,
+    .meta-chip strong {
+      display: block;
+    }
+
+    .meta-chip span {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 8px;
+    }
+
+    .meta-chip strong {
+      font-size: 15px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .context {
+      border-radius: var(--radius-xl);
+      padding: 28px;
+    }
+
+    .context-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .context-head h3 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .context-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .context-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(380px, 440px);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .flow-map {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .flow-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(240, 245, 251, 0.9));
+      border: 1px solid rgba(98, 125, 160, 0.12);
+      box-shadow: 0 12px 28px rgba(16, 29, 51, 0.06);
+    }
+
+    .flow-card strong,
+    .flow-card span {
+      display: block;
+    }
+
+    .flow-card strong {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .flow-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .phone-stage {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding: 18px;
+      background:
+        radial-gradient(circle at top, rgba(95, 125, 255, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(224, 233, 244, 0.94), rgba(209, 219, 232, 0.88));
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(91, 115, 146, 0.12);
+      overflow: hidden;
+    }
+
+    .phone-stage::before {
+      content: "";
+      position: absolute;
+      inset: 16px 16px auto;
+      height: 160px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent);
+      pointer-events: none;
+    }
+
+    .phone {
+      width: min(100%, var(--phone-w));
+      height: var(--phone-h);
+      border-radius: 50px;
+      background: linear-gradient(180deg, #1b2737, #0d1520);
+      padding: 12px;
+      box-shadow:
+        0 34px 80px rgba(9, 18, 33, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      width: 140px;
+      height: 30px;
+      transform: translateX(-50%);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 3;
+    }
+
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 40px;
+      background:
+        radial-gradient(circle at top right, rgba(95, 125, 255, 0.08), transparent 22%),
+        linear-gradient(180deg, #f8fbff 0%, #f2f6fb 100%);
+      overflow: hidden;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(10px);
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0.3s;
+      height: 100%;
+      overflow-y: auto;
+      padding: 56px 20px 90px;
+    }
+
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    .statusbar {
+      position: sticky;
+      top: -56px;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: -56px -20px 12px;
+      padding: 18px 22px 14px;
+      backdrop-filter: blur(12px);
+      background: rgba(248, 251, 255, 0.64);
+      border-bottom: 1px solid rgba(99, 124, 156, 0.12);
+    }
+
+    .time {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .icons {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .screen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .screen-header h4 {
+      margin: 0;
+      font-size: 32px;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+    }
+
+    .screen-header p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .pill,
+    .ghost-pill,
+    .mini-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      background: linear-gradient(135deg, rgba(214, 248, 241, 0.96), rgba(231, 244, 255, 0.92));
+      color: var(--mint-deep);
+      font-size: 12px;
+      border: 1px solid rgba(22, 199, 173, 0.16);
+    }
+
+    .ghost-pill {
+      padding: 9px 14px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(94, 120, 153, 0.14);
+      color: var(--text);
+      font-size: 12px;
+      box-shadow: 0 10px 20px rgba(12, 24, 42, 0.06);
+    }
+
+    .ghost-pill:hover {
+      border-color: var(--text);
+    }
+
+    .mini-pill {
+      padding: 7px 10px;
+      background: var(--blue-soft, rgba(59, 130, 246, 0.1));
+      color: var(--blue, #3b82f6);
+      font-size: 11px;
+    }
+
+    .hero-state {
+      padding: 24px;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at top right, rgba(95, 125, 255, 0.12), transparent 28%),
+        linear-gradient(135deg, rgba(214, 248, 241, 0.96), rgba(255, 244, 234, 0.88));
+      border: 1px solid rgba(102, 126, 155, 0.12);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .hero-state.modern {
+      padding: 22px;
+      background:
+        radial-gradient(circle at top left, rgba(22, 199, 173, 0.24), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(95, 125, 255, 0.16), transparent 28%),
+        linear-gradient(145deg, #10253f 0%, #173556 58%, #0f7f76 100%);
+      color: #fff;
+      border: 0;
+      box-shadow: 0 24px 42px rgba(16, 36, 61, 0.22);
+    }
+
+    .hero-state.modern .eyebrow,
+    .hero-state.modern .score-sub,
+    .hero-state.modern .status-card span {
+      color: rgba(255, 255, 255, 0.74);
+    }
+
+    .hero-state.modern .status-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-state .eyebrow {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+      align-items: end;
+    }
+
+    .score {
+      font-size: 72px;
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+      font-weight: 800;
+    }
+
+    .score-sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-card {
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(101, 126, 156, 0.12);
+    }
+
+    .status-card strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .status-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      display: block;
+    }
+
+    .hero-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .live-chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 128px;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .ring-meter {
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      margin-left: auto;
+      background:
+        conic-gradient(var(--coral) 0 255deg, rgba(255, 255, 255, 0.14) 255deg 360deg);
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+
+    .ring-meter::after {
+      content: "주의";
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(11, 23, 39, 0.86);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-glance {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .glance-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .glance-card span,
+    .glance-card strong {
+      display: block;
+    }
+
+    .glance-card span {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .glance-card strong {
+      font-size: 16px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-link {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .insight-banner {
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(95, 125, 255, 0.1), rgba(22, 199, 173, 0.12));
+      border: 1px solid rgba(95, 125, 255, 0.12);
+      margin-bottom: 14px;
+    }
+
+    .insight-banner strong,
+    .insight-banner span {
+      display: block;
+    }
+
+    .insight-banner strong {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .insight-banner span {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .action-chip {
+      padding: 14px;
+      border-radius: 20px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(98, 123, 154, 0.12);
+      box-shadow: 0 12px 24px rgba(18, 31, 53, 0.05);
+    }
+
+    .action-chip strong,
+    .action-chip span {
+      display: block;
+    }
+
+    .action-chip strong {
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .action-chip span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0 16px;
+    }
+
+    .mini-stat {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(239, 244, 250, 0.94);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+    }
+
+    .mini-stat span,
+    .mini-stat strong {
+      display: block;
+    }
+
+    .mini-stat span {
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .mini-stat strong {
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mood-chip {
+      padding: 14px 12px;
+      border-radius: 18px;
+      background: rgba(239, 244, 250, 0.92);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .mood-chip.active {
+      background: linear-gradient(135deg, rgba(214, 248, 241, 0.96), rgba(231, 244, 255, 0.92));
+      border-color: rgba(22, 199, 173, 0.2);
+      color: var(--mint-deep);
+    }
+
+    .journal-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(100, 126, 157, 0.12);
+      box-shadow: 0 14px 26px rgba(17, 33, 58, 0.05);
+      margin-bottom: 14px;
+    }
+
+    .journal-card strong {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .coach-card {
+      padding: 20px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #fefefe, #f5f8fc);
+      border: 1px solid rgba(100, 126, 157, 0.12);
+      box-shadow: 0 18px 34px rgba(17, 33, 58, 0.06);
+      margin-bottom: 16px;
+    }
+
+    .coach-card.primary {
+      background:
+        radial-gradient(circle at top right, rgba(22, 199, 173, 0.12), transparent 26%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(240, 246, 252, 0.98));
+    }
+
+    .coach-summary {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(239, 244, 250, 0.82);
+      font-size: 14px;
+      line-height: 1.65;
+      color: #304055;
+    }
+
+    .prompt-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .prompt-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(239, 244, 250, 0.96);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .prompt-pill.active {
+      background: linear-gradient(135deg, rgba(214, 248, 241, 0.96), rgba(231, 244, 255, 0.9));
+      color: var(--mint-deep);
+    }
+
+    .tab-btn {
+      position: relative;
+    }
+
+    .tab-btn::before {
+      content: "";
+      display: block;
+      width: 18px;
+      height: 18px;
+      margin: 0 auto 6px;
+      border-radius: 6px;
+      background: rgba(118, 134, 157, 0.16);
+    }
+
+    .tab-btn.active::before {
+      background: linear-gradient(135deg, var(--mint), var(--blue));
+    }
+
+    .two-up, .three-up, .four-up {
+      display: grid;
+      gap: 12px;
+    }
+
+    .two-up { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .three-up { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .four-up { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(100, 126, 157, 0.12);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .card h5,
+    .card strong {
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .metric-box {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, rgba(242, 246, 251, 0.98), rgba(234, 240, 247, 0.94));
+      border: 1px solid rgba(100, 126, 157, 0.1);
+    }
+
+    .metric-box span,
+    .metric-box strong {
+      display: block;
+    }
+
+    .metric-box span {
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .metric-box strong {
+      font-size: 24px;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .list-item {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 244, 250, 0.94);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .list-item:hover {
+      background: #fff;
+      box-shadow: 0 10px 20px rgba(18, 31, 53, 0.06);
+    }
+
+    .list-item strong,
+    .list-item span {
+      display: block;
+    }
+
+    .list-item strong {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .list-item span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .cta,
+    .secondary-cta {
+      width: 100%;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      border: 1px solid transparent;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, #13243b, #1e3e65);
+      color: #fff;
+      box-shadow: 0 18px 32px rgba(19, 36, 59, 0.2);
+    }
+
+    .cta:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .secondary-cta {
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(96, 122, 153, 0.14);
+      box-shadow: 0 10px 20px rgba(14, 25, 43, 0.04);
+    }
+
+    .secondary-cta:hover {
+      transform: translateY(-1px);
+      border-color: var(--text);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 6px;
+      border-radius: var(--radius-lg);
+      background: rgba(233, 240, 247, 0.9);
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .tab.active {
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart {
+      height: 160px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(238, 244, 249, 0.92), rgba(228, 236, 245, 0.96));
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(98, 123, 154, 0.1);
+    }
+
+    .chart svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .day {
+      aspect-ratio: 1;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(100, 126, 157, 0.12);
+      font-size: 13px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      position: relative;
+      color: var(--text);
+    }
+
+    .day.muted {
+      color: #b8c0c4;
+      background: rgba(236, 242, 248, 0.92);
+    }
+
+    .day.safe { background: var(--mint-soft); border-color: var(--mint);}
+    .day.warn { background: rgba(245, 158, 11, 0.1); border-color: var(--yellow); }
+    .day.alert { background: rgba(239, 68, 68, 0.1); border-color: var(--coral); }
+
+    .heatmap {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .heat {
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(237, 243, 249, 0.92);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+    }
+
+    .heat.low { background: var(--mint-soft); }
+    .heat.mid { background: rgba(59, 130, 246, 0.1); }
+    .heat.high { background: rgba(239, 68, 68, 0.15); }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(239, 244, 250, 0.92);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .input-card {
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(100, 126, 157, 0.12);
+      margin-bottom: 16px;
+    }
+
+    .selector-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .selector {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 244, 250, 0.94);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .selector.active {
+      background: var(--mint-soft);
+      border-color: var(--mint);
+      color: var(--mint-deep);
+    }
+
+    .textarea {
+      margin-top: 14px;
+      padding: 14px;
+      min-height: 90px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 244, 250, 0.94);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .bottom-nav {
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: 16px -20px -90px;
+      padding: 12px 16px 24px;
+      background: linear-gradient(180deg, transparent, rgba(244, 248, 252, 0.92) 24%);
+    }
+
+    .nav-bar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px;
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(96, 122, 153, 0.12);
+      box-shadow: var(--shadow);
+    }
+
+    .tab-btn {
+      padding: 10px 4px;
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(214, 248, 241, 0.96), rgba(231, 244, 255, 0.9));
+      color: var(--mint-deep);
+    }
+
+    .right-panel h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      letter-spacing: -0.03em;
+    }
+
+    .right-panel p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .panel-block + .panel-block {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(90, 116, 148, 0.14);
+    }
+
+    .device-card {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(239, 244, 250, 0.92);
+      border: 1px solid rgba(100, 126, 157, 0.12);
+      margin-bottom: 12px;
+    }
+
+    .widget-preview {
+      display: grid;
+      gap: 12px;
+    }
+
+    .widget {
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      background:
+        radial-gradient(circle at top right, rgba(22, 199, 173, 0.08), transparent 24%),
+        rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(99, 124, 155, 0.12);
+      box-shadow: 0 12px 24px rgba(16, 30, 51, 0.06);
+    }
+
+    .widget.small { min-height: 110px; }
+    .widget.medium { min-height: 148px; }
+    .widget.large { min-height: 190px; }
+
+    .widget-stat {
+      margin: 10px 0 6px;
+      font-size: 32px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 800;
+    }
+
+    .widget-note {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .widget-bar {
+      height: 10px;
+      margin-top: 14px;
+      border-radius: 999px;
+      background: rgba(223, 231, 241, 0.96);
+      overflow: hidden;
+    }
+
+    .widget-bar::after {
+      content: "";
+      display: block;
+      width: var(--fill, 68%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--mint), var(--blue));
+    }
+
+    .watch-chip {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.82);
+      text-align: center;
+    }
+
+    .watch-preview {
+      width: 196px;
+      margin: 8px auto 0;
+      padding: 12px;
+      border-radius: 50px;
+      background: linear-gradient(180deg, #1b2737, #0e1622);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .watch-face {
+      min-height: 228px;
+      padding: 20px;
+      border-radius: 40px;
+      background:
+        radial-gradient(circle at top, rgba(95, 125, 255, 0.18), transparent 30%),
+        #07111f;
+      color: #fff;
+    }
+
+    .watch-face h5 {
+      margin: 0 0 16px;
+      font-size: 16px;
+      text-align: center;
+      letter-spacing: -0.03em;
+    }
+
+    .watch-ring {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background:
+        conic-gradient(var(--mint) 0 260deg, rgba(255,255,255,0.1) 260deg 360deg);
+      display: grid;
+      place-items: center;
+    }
+
+    .watch-ring::after {
+      content: "71";
+      font-family: 'Pretendard', sans-serif;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #121212;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .flow-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .flow-line {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: rgba(239, 244, 250, 0.92);
+      border: 1px solid rgba(100, 126, 157, 0.1);
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 1340px) {
+      .app-shell {
+        grid-template-columns: 260px minmax(0, 1fr);
+      }
+
+      .right-panel {
+        grid-column: 1 / -1;
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      body {
+        padding: 16px;
+      }
+
+      .app-shell {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      .context-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 0;
+      }
+
+      .app-shell,
+      .sidebar,
+      .context,
+      .hero-card,
+      .right-panel {
+        border-radius: 0;
+      }
+
+      .hero-meta,
+      .two-up,
+      .three-up,
+      .four-up,
+      .flow-map,
+      .hero-layout,
+      .hero-glance,
+      .metric-strip,
+      .quick-actions,
+      .mood-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-preview-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .section-head,
+      .hero-topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .ring-meter {
+        margin-left: 0;
+      }
+
+      .phone-stage {
+        padding: 0;
+        background: transparent;
+        border: 0;
+      }
+
+      .phone {
+        width: 100%;
+        height: auto;
+        min-height: 760px;
+        border-radius: 0;
+        padding: 0;
+      }
+
+      .phone-screen {
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-label">v2 Prototype</span>
+        <h1>BodySignal v2</h1>
+        <p>정보 밀도는 높이고 피로감은 낮추는 방향으로 재정리했습니다. 오늘 상태, 분석, 회복 액션이 한눈에 들어오는 대시보드형 목업입니다.</p>
+      </div>
+
+      <div class="group">
+        <h2 class="group-title">Core Flow</h2>
+        <div class="screen-nav">
+          <button class="screen-link active" data-screen-target="screen-onboarding">
+            <strong>온보딩</strong>
+            <span>앱 소개, 건강 권한, 워치/광고/AI 안내</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-today">
+            <strong>오늘</strong>
+            <span>스트레스 지수, 회복 점수, 행동 추천</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-detail">
+            <strong>스트레스 상세</strong>
+            <span>원인 해석, 지표 상세, 비교 문구</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-record">
+            <strong>기록</strong>
+            <span>감정, 수분, 카페인, 메모 입력</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 class="group-title">Analysis</h2>
+        <div class="screen-nav">
+          <button class="screen-link" data-screen-target="screen-trend">
+            <strong>트렌드</strong>
+            <span>주간/월간/연간 세그먼트와 차트</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-calendar">
+            <strong>캘린더 히스토리</strong>
+            <span>날짜별 상태 색상과 상세 기록</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-insight">
+            <strong>인사이트</strong>
+            <span>상위 원인, 감정 추세, 생활 패턴 요약</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 class="group-title">Assist</h2>
+        <div class="screen-nav">
+          <button class="screen-link" data-screen-target="screen-ai">
+            <strong>AI 코치</strong>
+            <span>질문 템플릿, 응답 카드, 후속 액션</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-ai-preview">
+            <strong>AI 전송 미리보기</strong>
+            <span>전송 요약, 항목 선택, 실행 확인</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-routines">
+            <strong>회복 루틴</strong>
+            <span>호흡, 산책, 수분, 저녁 루틴 시작</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 class="group-title">Devices</h2>
+        <div class="screen-nav">
+          <button class="screen-link" data-screen-target="screen-widgets">
+            <strong>위젯</strong>
+            <span>소형/중형/대형 정보 밀도 확인</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-watch">
+            <strong>Watch / Wear OS</strong>
+            <span>컴플리케이션, 빠른 액션, 동기화 상태</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2 class="group-title">Support</h2>
+        <div class="screen-nav">
+          <button class="screen-link" data-screen-target="screen-settings">
+            <strong>설정</strong>
+            <span>권한, AI, 광고 정책, 데이터 관리</span>
+          </button>
+          <button class="screen-link" data-screen-target="screen-faq">
+            <strong>FAQ / 도움말</strong>
+            <span>HRV 설명, 동기화 이슈, 정책 고지</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="center">
+      <section class="hero-card">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="hero-eyebrow">Trendy Health Dashboard</span>
+            <h2>차분하지만 선명한 건강 앱 목업으로 바꿨습니다.</h2>
+            <p>기존의 밋밋한 문서형 화면 대신, 핵심 점수와 행동 유도를 먼저 보여주는 구조로 정리했습니다. 컬러 위계, 카드 간격, 폰 스테이지를 다시 잡아서 실제 서비스 제안서처럼 보이도록 다듬었습니다.</p>
+            <div class="hero-meta">
+              <div class="meta-chip">
+                <span>Primary Tabs</span>
+                <strong>오늘 / 기록 / 트렌드 / AI / 설정</strong>
+              </div>
+              <div class="meta-chip">
+                <span>Analysis Layer</span>
+                <strong>캘린더, 인사이트, 패턴 비교</strong>
+              </div>
+              <div class="meta-chip">
+                <span>Devices</span>
+                <strong>홈 위젯, Watch / Wear OS</strong>
+              </div>
+              <div class="meta-chip">
+                <span>Prototype Type</span>
+                <strong>정적 HTML + 내부 화면 전환</strong>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="hero-preview">
+              <strong>Design Direction</strong>
+              <span>Calm data, clear action. 안정적인 톤 위에 회복 유도와 경고 신호를 분명하게 올리는 모바일 헬스 대시보드 스타일입니다.</span>
+            </div>
+            <div class="hero-preview-grid">
+              <div class="hero-preview-tile">
+                <strong>71</strong>
+                <span>오늘 스트레스 지수 히어로 중심 구조</span>
+              </div>
+              <div class="hero-preview-tile">
+                <strong>3</strong>
+                <span>한 번에 보이는 회복 액션 개수</span>
+              </div>
+              <div class="hero-preview-tile">
+                <strong>W/M/Y</strong>
+                <span>주간/월간/연간 분석을 같은 톤으로 연결</span>
+              </div>
+              <div class="hero-preview-tile">
+                <strong>Watch</strong>
+                <span>위젯과 워치 진입을 초기 경험에 포함</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="context">
+        <div class="context-head">
+          <div>
+            <h3>프로토타입 범위</h3>
+            <p>기획서 기준 핵심 경로와 연결 화면을 모두 포함했습니다. 우측에는 위젯/워치 미리보기와 연결 흐름 요약을 따로 두었습니다.</p>
+          </div>
+          <span class="pill">v2 Mockup Layout</span>
+        </div>
+
+        <div class="context-grid">
+          <div class="flow-map">
+            <div class="flow-card">
+              <strong>01. Onboarding</strong>
+              <span>건강 권한, 데이터 흐름, 워치/광고/AI 소개</span>
+            </div>
+            <div class="flow-card">
+              <strong>02. Today</strong>
+              <span>점수 Hero, 원인 카드, 행동 추천, 빠른 기록</span>
+            </div>
+            <div class="flow-card">
+              <strong>03. Trend</strong>
+              <span>세그먼트, 차트, 캘린더, 시간대 분석</span>
+            </div>
+            <div class="flow-card">
+              <strong>04. Insight</strong>
+              <span>감정 추세, 생활 패턴, 요약 문장 카드</span>
+            </div>
+            <div class="flow-card">
+              <strong>05. Devices</strong>
+              <span>위젯 크기별 구성, 워치 액션/동기화</span>
+            </div>
+            <div class="flow-card">
+              <strong>06. Support</strong>
+              <span>설정, FAQ, 동기화/권한 문제 해결</span>
+            </div>
+          </div>
+
+          <div class="phone-stage">
+            <div class="phone">
+              <div class="phone-screen">
+                <section class="screen active" id="screen-onboarding">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">First Launch</span>
+                      <h4>BodySignal 시작</h4>
+                      <p>오늘 내 몸의 스트레스 신호를 빠르게 확인하는 로컬 기반 컨디션 앱</p>
+                    </div>
+                  </div>
+                  <div class="hero-state">
+                    <span class="eyebrow">Onboarding Flow</span>
+                    <div class="score-row">
+                      <div>
+                        <div class="score">4</div>
+                        <div class="score-sub">핵심 단계: 소개, 권한, 광고, 워치</div>
+                      </div>
+                      <div class="status-card">
+                        <strong>서버 없음</strong>
+                        <span>건강 데이터와 감정 기록은 기기 안에 저장되고, AI는 사용자가 직접 고른 Provider로만 전송됩니다.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>권한 요청 안내</h5>
+                    <p>HRV, 안정 시 심박수, 수면, 걸음, 운동 기록을 스트레스 지수 계산에 사용합니다. HealthKit / Health Connect 권한이 있어야 오늘 점수와 장기 분석이 정확해집니다.</p>
+                  </div>
+                  <div class="card">
+                    <h5>워치 연동 소개</h5>
+                    <p>워치에서는 오늘 스트레스 지수, 회복 점수, 간단 기록, 호흡 루틴 시작을 빠르게 사용할 수 있습니다. 연결 상태와 마지막 동기화 시간도 확인합니다.</p>
+                    <div class="selector-row">
+                      <span class="selector active">Apple Watch</span>
+                      <span class="selector">Wear OS</span>
+                      <span class="selector">홈 위젯 포함</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>광고 / AI 정책</h5>
+                    <p>광고는 오늘/트렌드 같은 비민감 화면에만 제한적으로 노출됩니다. 감정 입력, AI 미리보기, 설정 화면에는 광고를 노출하지 않습니다.</p>
+                  </div>
+                  <button class="cta" data-go="screen-today">기본 데이터 흐름 보고 시작하기</button>
+                  <button class="secondary-cta" data-go="screen-settings" style="margin-top:10px;">권한/설정 구조 먼저 보기</button>
+                </section>
+
+                <section class="screen" id="screen-today">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Today</span>
+                      <h4>오늘</h4>
+                      <p>점수, 원인, 행동 추천을 한 화면에서 확인</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-detail">상세 보기</button>
+                  </div>
+                  <div class="hero-state modern">
+                    <div class="hero-topline">
+                      <span class="eyebrow">Stress Status</span>
+                      <span class="live-chip">LIVE SYNC 09:32</span>
+                    </div>
+                    <div class="hero-layout">
+                      <div>
+                        <div class="score">71</div>
+                        <div class="score-sub">주의 상태 · 최근 7일 평균보다 12점 높음</div>
+                        <div class="status-card" style="margin-top:14px;">
+                          <strong>회복 점수 46</strong>
+                          <span>강한 운동보다 가벼운 활동과 휴식을 우선하는 것이 좋습니다.</span>
+                        </div>
+                      </div>
+                      <div class="ring-meter"></div>
+                    </div>
+                    <div class="hero-glance">
+                      <div class="glance-card"><span>Sleep Debt</span><strong>1h 48m</strong></div>
+                      <div class="glance-card"><span>Main Trigger</span><strong>수면 부족</strong></div>
+                      <div class="glance-card"><span>Next Best</span><strong>3분 호흡</strong></div>
+                    </div>
+                  </div>
+                  <div class="insight-banner">
+                    <strong>오늘의 한 줄 인사이트</strong>
+                    <span>수면 부족과 낮은 HRV가 겹친 날입니다. 오전에는 무리한 성과보다 회복 행동을 먼저 배치하는 편이 유리합니다.</span>
+                  </div>
+                  <div class="quick-actions">
+                    <button class="action-chip" data-go="screen-record">
+                      <strong>빠른 기록</strong>
+                      <span>지금 기분과 원인 추가</span>
+                    </button>
+                    <button class="action-chip" data-go="screen-routines">
+                      <strong>회복 루틴</strong>
+                      <span>3분 호흡 바로 시작</span>
+                    </button>
+                    <button class="action-chip" data-go="screen-ai">
+                      <strong>AI 코치</strong>
+                      <span>오늘 상태 자연어 해석</span>
+                    </button>
+                  </div>
+                  <div class="section-head">
+                    <h5 class="section-title">핵심 원인</h5>
+                    <button class="section-link" data-go="screen-detail">전체 해석</button>
+                  </div>
+                  <div class="card">
+                    <div class="list">
+                      <button class="list-item" data-go="screen-detail">
+                        <div><strong>HRV 하락</strong><span>최근 7일 평균 32ms 대비 오늘 18ms</span></div>
+                        <span>›</span>
+                      </button>
+                      <button class="list-item" data-go="screen-detail">
+                        <div><strong>수면 부족</strong><span>4시간 32분, 깊은 수면 비율 감소</span></div>
+                        <span>›</span>
+                      </button>
+                      <button class="list-item" data-go="screen-detail">
+                        <div><strong>저녁 카페인</strong><span>어제 19:40 섭취 기록 있음</span></div>
+                        <span>›</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="metric-strip">
+                    <div class="mini-stat"><span>HRV</span><strong>18 ms</strong></div>
+                    <div class="mini-stat"><span>RHR</span><strong>71 bpm</strong></div>
+                    <div class="mini-stat"><span>Sleep</span><strong>4h 32m</strong></div>
+                    <div class="mini-stat"><span>Steps</span><strong>3,870</strong></div>
+                  </div>
+                  <div class="section-head">
+                    <h5 class="section-title">오늘 추천 행동</h5>
+                    <span class="mini-pill">Top 3 Actions</span>
+                  </div>
+                  <div class="card">
+                    <div class="list">
+                      <div class="list-item"><div><strong>10분 산책</strong><span>낮은 강도의 움직임으로 회복 유도</span></div><span>✓</span></div>
+                      <div class="list-item"><div><strong>수분 500ml</strong><span>오전 중 1회, 오후 중 1회 권장</span></div><span>＋</span></div>
+                      <button class="list-item" data-go="screen-routines"><div><strong>3분 호흡 루틴</strong><span>워치에서도 바로 시작 가능</span></div><span>›</span></button>
+                    </div>
+                  </div>
+                  <div class="two-up" style="margin-top:12px;">
+                    <button class="secondary-cta" data-go="screen-record">빠른 기록</button>
+                    <button class="cta" data-go="screen-ai">AI에게 오늘 상태 묻기</button>
+                  </div>
+                  <div class="bottom-nav">
+                    <div class="nav-bar">
+                      <button class="tab-btn active" data-go="screen-today">오늘</button>
+                      <button class="tab-btn" data-go="screen-record">기록</button>
+                      <button class="tab-btn" data-go="screen-trend">트렌드</button>
+                      <button class="tab-btn" data-go="screen-ai">AI</button>
+                      <button class="tab-btn" data-go="screen-settings">설정</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-detail">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Detail</span>
+                      <h4>스트레스 상세</h4>
+                      <p>오늘 점수의 근거와 비교 문구를 풀어 보여주는 화면</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-today">닫기</button>
+                  </div>
+                  <div class="card">
+                    <h5>오늘은 왜 주의 상태인가요?</h5>
+                    <p>오늘 스트레스 지수는 71점입니다. 최근 7일 평균보다 높고, 지난 30일 기준으로도 상위 20% 수준입니다. HRV가 낮고 수면 시간이 부족해 몸이 회복 신호를 충분히 보내지 못하고 있습니다.</p>
+                  </div>
+                  <div class="card">
+                    <h5>지표 비교</h5>
+                    <div class="chart">
+                      <svg viewBox="0 0 320 150" preserveAspectRatio="none">
+                        <polyline points="8,92 56,68 104,74 152,118 200,90 248,96 296,128" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                        <circle cx="296" cy="128" r="6" fill="#ef4444"></circle>
+                      </svg>
+                    </div>
+                    <p style="margin-top:10px;">HRV는 최근 7일 평균 32ms 대비 오늘 18ms입니다. 새벽 이후 급격히 떨어졌고, 저녁까지 회복이 거의 나타나지 않았습니다.</p>
+                  </div>
+                  <div class="three-up">
+                    <div class="metric-box"><span>7일 평균</span><strong>32 ms</strong></div>
+                    <div class="metric-box"><span>30일 평균</span><strong>36 ms</strong></div>
+                    <div class="metric-box"><span>오늘</span><strong>18 ms</strong></div>
+                  </div>
+                  <div class="card" style="margin-top:12px;">
+                    <h5>다음 행동 제안</h5>
+                    <div class="list">
+                      <button class="list-item" data-go="screen-routines"><div><strong>호흡 루틴 시작</strong><span>교감 신경 진정 유도</span></div><span>›</span></button>
+                      <button class="list-item" data-go="screen-trend"><div><strong>최근 패턴 비교</strong><span>비슷한 날의 원인과 회복 경로 확인</span></div><span>›</span></button>
+                      <button class="list-item" data-go="screen-ai"><div><strong>AI 해석 보기</strong><span>오늘 상태를 자연어로 요약</span></div><span>›</span></button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-record">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Record</span>
+                      <h4>기록</h4>
+                      <p>감정, 생활 로그, 메모를 빠르게 추가</p>
+                    </div>
+                  </div>
+                  <div class="journal-card">
+                    <strong>지금 상태를 빠르게 남기기</strong>
+                    <div class="mood-grid">
+                      <span class="mood-chip">편안함</span>
+                      <span class="mood-chip">보통</span>
+                      <span class="mood-chip active">피곤함</span>
+                      <span class="mood-chip">불안함</span>
+                      <span class="mood-chip">예민함</span>
+                      <span class="mood-chip">무기력함</span>
+                    </div>
+                  </div>
+                  <div class="journal-card">
+                    <strong>스트레스 원인 태그</strong>
+                    <div class="selector-row">
+                      <span class="selector active">업무</span>
+                      <span class="selector active">수면 부족</span>
+                      <span class="selector">인간관계</span>
+                      <span class="selector">운동</span>
+                      <span class="selector">카페인</span>
+                      <span class="selector">과식</span>
+                    </div>
+                  </div>
+                  <div class="journal-card">
+                    <strong>생활 로그</strong>
+                    <div class="two-up">
+                      <div class="metric-box"><span>수분</span><strong>500 ml</strong></div>
+                      <div class="metric-box"><span>카페인</span><strong>1 cup</strong></div>
+                    </div>
+                    <div class="selector-row" style="margin-top:10px;">
+                      <span class="selector active">250ml</span>
+                      <span class="selector">500ml</span>
+                      <span class="selector active">커피</span>
+                      <span class="selector">차</span>
+                      <span class="selector">에너지드링크</span>
+                    </div>
+                  </div>
+                  <div class="journal-card">
+                    <strong>한 줄 메모</strong>
+                    <div class="textarea">오전 회의가 길었고, 어제 늦게 잤음. 퇴근 후 운동은 가볍게만 할 예정.</div>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-calendar">기록 히스토리 보기</button>
+                    <button class="cta" data-go="screen-insight">패턴 분석으로 이동</button>
+                  </div>
+                  <div class="bottom-nav">
+                    <div class="nav-bar">
+                      <button class="tab-btn" data-go="screen-today">오늘</button>
+                      <button class="tab-btn active" data-go="screen-record">기록</button>
+                      <button class="tab-btn" data-go="screen-trend">트렌드</button>
+                      <button class="tab-btn" data-go="screen-ai">AI</button>
+                      <button class="tab-btn" data-go="screen-settings">설정</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-trend">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Trend</span>
+                      <h4>트렌드</h4>
+                      <p>주간/월간/연간 세그먼트와 장기 패턴 비교</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-calendar">캘린더</button>
+                  </div>
+                  <div class="tabs">
+                    <button class="tab active">주간</button>
+                    <button class="tab">월간</button>
+                    <button class="tab">연간</button>
+                  </div>
+                  <div class="hero-state" style="margin-bottom:14px;">
+                    <span class="eyebrow">Weekly Snapshot</span>
+                    <div class="score-row">
+                      <div>
+                        <div class="score" style="font-size:56px;">58</div>
+                        <div class="score-sub">주간 평균 스트레스 · 지난주 대비 6점 상승</div>
+                      </div>
+                      <div class="status-card">
+                        <strong>회복 좋은 날 2일</strong>
+                        <span>수면 6.5시간 이상 확보한 날에 회복 점수가 안정적으로 유지되었습니다.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="metric-strip">
+                    <div class="mini-stat"><span>Peak Load</span><strong>71</strong></div>
+                    <div class="mini-stat"><span>Lowest HRV</span><strong>18 ms</strong></div>
+                    <div class="mini-stat"><span>Late Stress</span><strong>21-24h</strong></div>
+                    <div class="mini-stat"><span>Good Recovery</span><strong>2일</strong></div>
+                  </div>
+                  <div class="card">
+                    <h5>주간 변화</h5>
+                    <div class="chart">
+                      <svg viewBox="0 0 320 150" preserveAspectRatio="none">
+                        <polyline points="12,106 60,90 108,78 156,64 204,86 252,72 300,58" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                        <polyline points="12,82 60,68 108,102 156,78 204,116 252,84 300,122" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></polyline>
+                      </svg>
+                    </div>
+                    <p style="margin-top:10px;">파란선은 회복 점수, 빨강선은 스트레스 지수입니다. 수면이 짧았던 이틀에서 간격이 벌어졌습니다.</p>
+                  </div>
+                  <div class="card">
+                    <h5>시간대 분석</h5>
+                    <div class="heatmap">
+                      <div class="heat low"></div><div class="heat low"></div><div class="heat mid"></div><div class="heat low"></div><div class="heat mid"></div><div class="heat high"></div>
+                      <div class="heat mid"></div><div class="heat mid"></div><div class="heat high"></div><div class="heat mid"></div><div class="heat low"></div><div class="heat low"></div>
+                    </div>
+                    <p style="margin-top:10px;">과부하가 가장 높았던 구간은 21:00~24:00이고, 회복이 가장 좋았던 구간은 03:00~06:00입니다.</p>
+                  </div>
+                  <div class="insight-banner">
+                    <strong>패턴 해석</strong>
+                    <span>이번 주에는 야간 스트레스 피크가 반복됐고, 다음 날 아침 HRV 회복도 느렸습니다. 취침 전 카페인과 늦은 업무가 공통 요인입니다.</span>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-calendar">월간 캘린더 열기</button>
+                    <button class="cta" data-go="screen-insight">패턴 인사이트 보기</button>
+                  </div>
+                  <div class="bottom-nav">
+                    <div class="nav-bar">
+                      <button class="tab-btn" data-go="screen-today">오늘</button>
+                      <button class="tab-btn" data-go="screen-record">기록</button>
+                      <button class="tab-btn active" data-go="screen-trend">트렌드</button>
+                      <button class="tab-btn" data-go="screen-ai">AI</button>
+                      <button class="tab-btn" data-go="screen-settings">설정</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-calendar">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">History</span>
+                      <h4>7월 기록</h4>
+                      <p>날짜별 상태 색상과 당일 기록 상세</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-trend">트렌드</button>
+                  </div>
+                  <div class="card">
+                    <h5>월간 캘린더</h5>
+                    <div class="calendar">
+                      <div class="day muted">29</div><div class="day muted">30</div><div class="day safe">1</div><div class="day warn">2</div><div class="day safe">3</div><div class="day warn">4</div><div class="day alert">5</div>
+                      <div class="day safe">6</div><div class="day safe">7</div><div class="day warn">8</div><div class="day safe">9</div><div class="day warn">10</div><div class="day alert">11</div><div class="day safe">12</div>
+                      <div class="day safe">13</div><div class="day warn">14</div><div class="day warn">15</div><div class="day safe">16</div><div class="day safe">17</div><div class="day warn">18</div><div class="day alert">19</div>
+                      <div class="day safe">20</div><div class="day safe">21</div><div class="day warn">22</div><div class="day safe">23</div><div class="day safe">24</div><div class="day warn">25</div><div class="day">26</div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>7월 5일 상세</h5>
+                    <div class="two-up">
+                      <div class="metric-box"><span>스트레스</span><strong>71</strong></div>
+                      <div class="metric-box"><span>회복</span><strong>46</strong></div>
+                    </div>
+                    <div class="list" style="margin-top:10px;">
+                      <div class="list-item"><div><strong>감정</strong><span>피곤함 · 업무 · 수면 부족</span></div><span>•</span></div>
+                      <div class="list-item"><div><strong>수분 / 카페인</strong><span>500ml · 커피 1잔</span></div><span>•</span></div>
+                      <div class="list-item"><div><strong>메모</strong><span>늦게 자고 긴 회의가 이어졌음</span></div><span>•</span></div>
+                    </div>
+                  </div>
+                  <button class="cta" data-go="screen-insight">이날 패턴을 인사이트로 보기</button>
+                </section>
+
+                <section class="screen" id="screen-insight">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Insight</span>
+                      <h4>패턴 인사이트</h4>
+                      <p>감정, 생활 습관, 회복 포인트를 문장과 카드로 요약</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-ai">AI 확장</button>
+                  </div>
+                  <div class="card">
+                    <h5>이번 주 요약</h5>
+                    <p>최근 7일 동안 수면이 6시간 미만인 날에는 스트레스 지수가 평균보다 18점 높았습니다. 저녁 카페인이 있는 날 다음 날 회복 점수도 낮게 나타났습니다.</p>
+                  </div>
+                  <div class="two-up">
+                    <div class="card">
+                      <strong>상위 원인</strong>
+                      <div class="tag-cloud">
+                        <span class="tag">수면 부족 x4</span>
+                        <span class="tag">업무 x3</span>
+                        <span class="tag">카페인 x2</span>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <strong>상위 감정</strong>
+                      <div class="tag-cloud">
+                        <span class="tag">피곤함</span>
+                        <span class="tag">예민함</span>
+                        <span class="tag">보통</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>회복 포인트</h5>
+                    <div class="list">
+                      <div class="list-item"><div><strong>좋았던 날 공통점</strong><span>23시 이전 취침, 오전 산책, 카페인 없음</span></div><span>↗</span></div>
+                      <div class="list-item"><div><strong>주의가 필요한 패턴</strong><span>야간 업무 + 저녁 커피 + 5시간 미만 수면</span></div><span>↘</span></div>
+                    </div>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-trend">트렌드와 같이 보기</button>
+                    <button class="cta" data-go="screen-ai-preview">AI 전송 데이터 확인</button>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-ai">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">AI Coach</span>
+                      <h4>AI 코치</h4>
+                      <p>오늘 상태를 자연어로 해석하고 질문 템플릿을 제공</p>
+                    </div>
+                  </div>
+                  <div class="coach-card primary">
+                    <strong style="display:block; margin-bottom:10px; font-size:16px;">빠른 질문</strong>
+                    <div class="prompt-row">
+                      <span class="prompt-pill active">오늘 왜 피곤하지?</span>
+                      <span class="prompt-pill">운동해도 될까?</span>
+                      <span class="prompt-pill">이번 주 원인은?</span>
+                    </div>
+                  </div>
+                  <div class="coach-card">
+                    <strong style="display:block; margin-bottom:12px; font-size:16px;">AI 응답 예시</strong>
+                    <div class="coach-summary">오늘은 HRV가 최근 평균보다 낮고 수면이 4시간 32분으로 부족했습니다. 업무 스트레스와 저녁 카페인 기록도 있어 회복 점수가 내려간 상태입니다. 낮은 강도의 산책과 이른 취침이 가장 우선순위가 높습니다.</div>
+                  </div>
+                  <div class="insight-banner">
+                    <strong>AI 제안 요약</strong>
+                    <span>지금은 성과를 더 끌어올리는 액션보다 긴장도를 낮추는 짧은 루틴이 더 효과적입니다.</span>
+                  </div>
+                  <div class="coach-card">
+                    <strong style="display:block; margin-bottom:12px; font-size:16px;">후속 액션</strong>
+                    <div class="list">
+                      <button class="list-item" data-go="screen-routines"><div><strong>호흡 루틴 시작</strong><span>3분 회복 루틴 연결</span></div><span>›</span></button>
+                      <button class="list-item" data-go="screen-ai-preview"><div><strong>전송 데이터 확인</strong><span>최소/보통/상세 범위 선택</span></div><span>›</span></button>
+                      <button class="list-item" data-go="screen-settings"><div><strong>Provider 설정</strong><span>OpenAI, Gemini, Claude, Custom API</span></div><span>›</span></button>
+                    </div>
+                  </div>
+                  <div class="bottom-nav">
+                    <div class="nav-bar">
+                      <button class="tab-btn" data-go="screen-today">오늘</button>
+                      <button class="tab-btn" data-go="screen-record">기록</button>
+                      <button class="tab-btn" data-go="screen-trend">트렌드</button>
+                      <button class="tab-btn active" data-go="screen-ai">AI</button>
+                      <button class="tab-btn" data-go="screen-settings">설정</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-ai-preview">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">AI Preview</span>
+                      <h4>전송 미리보기</h4>
+                      <p>사용자가 AI로 보내는 내용을 실행 전에 직접 확인</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-ai">뒤로</button>
+                  </div>
+                  <div class="card">
+                    <h5>전송 범위</h5>
+                    <div class="selector-row">
+                      <span class="selector active">최소</span>
+                      <span class="selector">보통</span>
+                      <span class="selector">상세</span>
+                      <span class="selector">직접 선택</span>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>전송 데이터</h5>
+                    <div class="textarea">오늘 스트레스 지수: 72
+회복 점수: 45
+HRV: 최근 평균보다 낮음
+수면: 4시간 30분
+운동: 강도 높은 운동 없음
+감정 기록: 피곤함, 업무 스트레스</div>
+                  </div>
+                  <div class="card">
+                    <h5>보안 안내</h5>
+                    <p>선택한 AI 제공자에게 이 요약 데이터만 전송됩니다. API Key는 보안 저장소에 보관되고 앱 자체 서버에는 저장되지 않습니다.</p>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-settings">Provider 바꾸기</button>
+                    <button class="cta" data-go="screen-ai">이 내용으로 조언 생성</button>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-routines">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Recovery</span>
+                      <h4>회복 루틴</h4>
+                      <p>오늘 상태에 맞는 짧은 회복 액션 모음</p>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>추천 루틴</h5>
+                    <div class="list">
+                      <div class="list-item"><div><strong>3분 호흡</strong><span>워치와 동시 시작 가능</span></div><span>▶</span></div>
+                      <div class="list-item"><div><strong>10분 산책</strong><span>HRV 회복에 유리한 저강도 활동</span></div><span>▶</span></div>
+                      <div class="list-item"><div><strong>수면 루틴</strong><span>23시 이전 취침, 카페인 컷오프</span></div><span>▶</span></div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>루틴 완료 체크</h5>
+                    <div class="three-up">
+                      <div class="metric-box"><span>호흡</span><strong>1 / 1</strong></div>
+                      <div class="metric-box"><span>산책</span><strong>0 / 1</strong></div>
+                      <div class="metric-box"><span>수분</span><strong>1 / 2</strong></div>
+                    </div>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-watch">워치에서 이어서 보기</button>
+                    <button class="cta" data-go="screen-today">오늘 화면으로 복귀</button>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-widgets">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Widgets</span>
+                      <h4>위젯 구조</h4>
+                      <p>크기별 정보 밀도와 빠른 진입 액션 설계</p>
+                    </div>
+                  </div>
+                  <div class="widget small">
+                    <strong>소형</strong>
+                    <p style="margin-top:6px;">스트레스 71 · 주의</p>
+                  </div>
+                  <div class="widget medium" style="margin-top:12px;">
+                    <strong>중형</strong>
+                    <p style="margin-top:6px;">스트레스 71 · 회복 46</p>
+                    <p style="margin-top:8px;">오늘은 가벼운 산책과 수분 섭취를 먼저 해보세요.</p>
+                  </div>
+                  <div class="widget large" style="margin-top:12px;">
+                    <strong>대형</strong>
+                    <p style="margin-top:6px;">상위 원인: 수면 부족</p>
+                    <div class="two-up" style="margin-top:10px;">
+                      <button class="secondary-cta" data-go="screen-record">빠른 기록</button>
+                      <button class="cta" data-go="screen-today">앱 열기</button>
+                    </div>
+                  </div>
+                  <button class="cta" style="margin-top:12px;" data-go="screen-watch">워치 화면도 보기</button>
+                </section>
+
+                <section class="screen" id="screen-watch">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Wearable</span>
+                      <h4>Watch / Wear OS</h4>
+                      <p>빠른 확인용 컴패니언, 상태 아이콘과 루틴 액션 중심</p>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>워치 메인</h5>
+                    <div class="two-up">
+                      <div class="metric-box"><span>스트레스</span><strong>71</strong></div>
+                      <div class="metric-box"><span>회복</span><strong>46</strong></div>
+                    </div>
+                    <div class="list" style="margin-top:10px;">
+                      <div class="list-item"><div><strong>빠른 감정 기록</strong><span>피곤함 / 보통 / 편안함</span></div><span>⌚</span></div>
+                      <div class="list-item"><div><strong>3분 호흡 시작</strong><span>워치 독립 실행 가능</span></div><span>⌚</span></div>
+                      <div class="list-item"><div><strong>동기화 상태</strong><span>마지막 동기화 09:32</span></div><span>⌚</span></div>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <h5>오류 상태 예시</h5>
+                    <p>권한 없음, 동기화 실패, 데이터 부족 시 명확한 경고 카드와 해결 버튼을 제공합니다. 예: “iPhone에서 Health 권한을 다시 확인하세요.”</p>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-settings">동기화 설정 보기</button>
+                    <button class="cta" data-go="screen-routines">워치 루틴 연결</button>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-settings">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Settings</span>
+                      <h4>설정</h4>
+                      <p>권한, AI, 광고 정책, 워치 연동, 데이터 관리 허브</p>
+                    </div>
+                  </div>
+                  <div class="list">
+                    <button class="list-item" data-go="screen-onboarding"><div><strong>건강 권한</strong><span>HealthKit / Health Connect 상태 확인</span></div><span>›</span></button>
+                    <button class="list-item" data-go="screen-ai-preview"><div><strong>AI 설정</strong><span>OpenAI · GPT-4.1 mini · 전송 범위 최소</span></div><span>›</span></button>
+                    <button class="list-item" data-go="screen-watch"><div><strong>워치 연동</strong><span>연결됨 · 마지막 동기화 09:32</span></div><span>›</span></button>
+                    <button class="list-item" data-go="screen-faq"><div><strong>FAQ / 도움말</strong><span>HRV 설명, 알림, 동기화 이슈</span></div><span>›</span></button>
+                    <div class="list-item"><div><strong>광고 설정</strong><span>개인화 광고 비활성 · 민감 화면 광고 제외</span></div><span>•</span></div>
+                    <div class="list-item"><div><strong>데이터 관리</strong><span>전체 삭제, AI 기록 삭제</span></div><span>•</span></div>
+                  </div>
+                  <div class="card" style="margin-top:12px;">
+                    <h5>고지 문구</h5>
+                    <p>스트레스 지수와 회복 점수는 참고용 건강 정보입니다. 질병의 진단, 치료, 예방을 목적으로 하지 않습니다.</p>
+                  </div>
+                </section>
+
+                <section class="screen" id="screen-faq">
+                  <div class="statusbar">
+                    <span class="time">09:41</span>
+                    <span class="icons">5G 72%</span>
+                  </div>
+                  <div class="screen-header">
+                    <div>
+                      <span class="pill">Help</span>
+                      <h4>FAQ / 도움말</h4>
+                      <p>HRV와 스트레스 해석, 워치 동기화, 알림 문제 해결</p>
+                    </div>
+                    <button class="ghost-pill" data-go="screen-settings">설정</button>
+                  </div>
+                  <div class="list">
+                    <div class="list-item"><div><strong>스트레스 지수는 의료 진단인가요?</strong><span>아니요. 로컬 계산 기반 참고용 컨디션 지표입니다.</span></div><span>＋</span></div>
+                    <div class="list-item"><div><strong>HRV가 낮으면 무조건 나쁜가요?</strong><span>절대값보다 개인 기준값 대비 변화량으로 해석합니다.</span></div><span>＋</span></div>
+                    <div class="list-item"><div><strong>워치 데이터가 안 보이면?</strong><span>권한, 블루투스 연결, 마지막 동기화 시점을 확인하세요.</span></div><span>＋</span></div>
+                    <div class="list-item"><div><strong>광고는 어떤 화면에만 보이나요?</strong><span>오늘/트렌드 같은 비민감 화면에만 제한적으로 노출됩니다.</span></div><span>＋</span></div>
+                  </div>
+                  <div class="card" style="margin-top:12px;">
+                    <h5>문제 해결 흐름</h5>
+                    <p>권한 없음 → 건강 앱 권한 재확인 → 앱 재실행 → 워치 동기화 점검 → 데이터 부족 메시지 확인 순서로 안내합니다.</p>
+                  </div>
+                  <div class="two-up">
+                    <button class="secondary-cta" data-go="screen-watch">워치 문제 보기</button>
+                    <button class="cta" data-go="screen-today">오늘 화면으로 돌아가기</button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="right-panel">
+      <div class="panel-block">
+        <h3>위젯 미리보기</h3>
+        <p>홈 화면에서 바로 보는 정보 밀도와 행동 유도를 확인할 수 있게 카드형으로 정리했습니다.</p>
+        <div class="widget-preview">
+          <div class="widget small">
+            <strong>Small</strong>
+            <div class="widget-stat">71</div>
+            <div class="widget-note">주의 상태 · 회복 루틴 진입</div>
+            <div class="widget-bar" style="--fill: 71%;"></div>
+          </div>
+          <div class="widget medium">
+            <strong>Medium</strong>
+            <div class="widget-stat">46</div>
+            <div class="widget-note">회복 점수 · 수분 먼저 · 3분 호흡 권장</div>
+            <div class="widget-bar" style="--fill: 46%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-block">
+        <h3>워치 미리보기</h3>
+        <p>컴플리케이션 확인 후 바로 감정 기록과 호흡 루틴으로 이어지는 흐름을 강조했습니다.</p>
+        <div class="watch-preview">
+          <div class="watch-face">
+            <h5>BodySignal</h5>
+            <div class="watch-ring"></div>
+            <div class="watch-chip">Recovery 46 · Breathe 3m</div>
+            <div class="list" style="gap:8px;">
+              <div class="list-item" style="padding:10px 12px; background: #1c1c1e; border: 1px solid #333;">
+                <div><strong style="color: #fff;">Recovery 46</strong><span style="color: var(--muted);">3m 호흡 권장</span></div>
+              </div>
+              <div class="list-item" style="padding:10px 12px; background: #1c1c1e; border: 1px solid #333;">
+                <div><strong style="color: #fff;">Sync 09:32</strong><span style="color: var(--muted);">iPhone 연결됨</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-block">
+        <h3>연결 흐름</h3>
+        <div class="flow-list">
+          <div class="flow-line">오늘 화면의 원인 카드에서 <strong>스트레스 상세</strong>로 진입</div>
+          <div class="flow-line">오늘 화면의 빠른 기록에서 <strong>기록</strong>으로 이동</div>
+          <div class="flow-line">트렌드 화면에서 <strong>캘린더 히스토리</strong>와 <strong>인사이트</strong>로 분기</div>
+          <div class="flow-line">인사이트와 오늘 화면에서 <strong>AI 코치</strong> 및 <strong>AI 전송 미리보기</strong>로 연결</div>
+          <div class="flow-line">설정에서 <strong>워치 연동</strong>, <strong>FAQ</strong>, <strong>광고/권한 정책</strong>으로 이동</div>
+        </div>
+      </div>
+
+      <div class="panel-block">
+        <h3>목업 범위 메모</h3>
+        <p>현재 파일은 레이아웃과 사용자 흐름 검토용입니다. 다음 단계에서는 이 구조를 기준으로 Flutter 화면 단위와 공통 컴포넌트 단위로 분리하면 됩니다.</p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const screenButtons = Array.from(document.querySelectorAll("[data-screen-target]"));
+    const goButtons = Array.from(document.querySelectorAll("[data-go]"));
+    const screens = Array.from(document.querySelectorAll(".screen"));
+
+    function activateScreen(screenId) {
+      const targetScreen = document.getElementById(screenId);
+      if (!targetScreen) return;
+
+      screens.forEach((screen) => {
+        screen.classList.remove("active");
+      });
+      
+      targetScreen.classList.add("active");
+      targetScreen.scrollTop = 0;
+
+      screenButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.screenTarget === screenId);
+      });
+    }
+
+    screenButtons.forEach((button) => {
+      button.addEventListener("click", () => activateScreen(button.dataset.screenTarget));
+    });
+
+    goButtons.forEach((button) => {
+      button.addEventListener("click", () => activateScreen(button.dataset.go));
+    });
+  </script>
+</body>
+</html>
