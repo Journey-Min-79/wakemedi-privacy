@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BodySignal 신규 앱 기획서 v1.1</title>
+  <style>
+    :root {
+      --bg: #f5efe6;
+      --paper: rgba(255, 252, 247, 0.92);
+      --line: rgba(43, 63, 74, 0.14);
+      --text: #21333d;
+      --muted: #60707a;
+      --accent: #0e6b68;
+      --accent-soft: rgba(14, 107, 104, 0.1);
+      --accent-strong: #0a4d4a;
+      --warm: #d46f4d;
+      --shadow: 0 18px 48px rgba(23, 41, 53, 0.12);
+      --content-width: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(14, 107, 104, 0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(212, 111, 77, 0.14), transparent 22%),
+        linear-gradient(180deg, #efe6d8 0%, var(--bg) 32%, #f7f3ec 100%);
+      line-height: 1.7;
+    }
+    a { color: var(--accent-strong); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .shell { width: min(calc(100% - 32px), var(--content-width)); margin: 28px auto 60px; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 38px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, rgba(10, 77, 74, 0.95), rgba(20, 108, 102, 0.88) 58%, rgba(212, 111, 77, 0.88));
+      color: #f8faf9;
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -120px auto;
+      width: 260px;
+      height: 260px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .hero h1 { margin: 18px 0 10px; font-size: clamp(2.1rem, 4vw, 3.4rem); line-height: 1.16; }
+    .hero p { margin: 0; max-width: 780px; color: rgba(248, 250, 249, 0.88); font-size: 1.05rem; }
+    .hero-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 26px; margin-top: 28px; position: relative; z-index: 1; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+    .meta-card, .summary-card {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(12px);
+    }
+    .meta-label { display: block; margin-bottom: 6px; font-size: 0.82rem; color: rgba(248, 250, 249, 0.75); }
+    .meta-card strong { display: block; font-size: 0.96rem; color: #fff; }
+    .summary-card h2 { margin: 0 0 10px; font-size: 1rem; color: #fff; }
+    .summary-card ul { margin: 0; padding-left: 18px; color: rgba(248, 250, 249, 0.92); }
+    .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 28px; align-items: start; margin-top: 26px; }
+    aside {
+      position: sticky;
+      top: 20px;
+      padding: 22px 20px;
+      border-radius: 24px;
+      background: rgba(255, 252, 247, 0.72);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 30px rgba(26, 42, 52, 0.08);
+    }
+    aside h2 { margin: 0 0 12px; font-size: 1rem; }
+    .toc { list-style: none; padding: 0; margin: 0; }
+    .toc li + li { margin-top: 6px; }
+    .toc-level-3 { padding-left: 12px; }
+    .toc a { display: block; padding: 7px 10px; border-radius: 12px; color: var(--text); }
+    .toc a:hover { background: var(--accent-soft); text-decoration: none; }
+    .content {
+      padding: 34px 38px;
+      border-radius: 30px;
+      background: var(--paper);
+      border: 1px solid rgba(59, 80, 89, 0.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .content h2, .content h3, .content h4 { scroll-margin-top: 24px; }
+    .content h2 { margin: 34px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); font-size: 1.75rem; }
+    .content h3 { margin: 28px 0 10px; font-size: 1.28rem; color: var(--accent-strong); }
+    .content h4 { margin: 24px 0 8px; font-size: 1.06rem; }
+    .content p { margin: 0 0 16px; color: #243844; }
+    .content ol, .content ul { margin: 0 0 18px; padding-left: 22px; }
+    .content li { margin-bottom: 6px; }
+    .content hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+    .table-wrap { overflow-x: auto; margin: 18px 0 24px; border-radius: 18px; border: 1px solid rgba(41, 69, 79, 0.12); }
+    table { width: 100%; border-collapse: collapse; background: #fffdf8; min-width: 640px; }
+    th, td { padding: 13px 14px; border-bottom: 1px solid rgba(41, 69, 79, 0.1); vertical-align: top; text-align: left; }
+    th { background: #f0f4f2; color: #183b3c; font-weight: 700; }
+    tbody tr:nth-child(even) td { background: #fbf8f2; }
+    blockquote { margin: 22px 0; padding: 20px 22px; border-left: 4px solid var(--warm); background: linear-gradient(135deg, rgba(212, 111, 77, 0.08), rgba(212, 111, 77, 0.02)); border-radius: 18px; }
+    blockquote p { margin: 0; font-size: 1.05rem; }
+    pre { margin: 18px 0 24px; padding: 18px 20px; overflow-x: auto; border-radius: 18px; background: #17333d; color: #edf4f2; }
+    code { font-family: "SFMono-Regular", "Consolas", monospace; font-size: 0.95em; background: rgba(18, 85, 82, 0.08); padding: 2px 6px; border-radius: 6px; }
+    pre code { background: transparent; padding: 0; border-radius: 0; color: inherit; }
+    @media (max-width: 980px) {
+      .hero-grid, .layout { grid-template-columns: 1fr; }
+      aside { position: static; order: -1; }
+      .content { padding: 28px 20px; }
+      .hero { padding: 28px 22px; }
+    }
+    @media (max-width: 640px) {
+      .shell { width: min(calc(100% - 18px), var(--content-width)); margin-top: 14px; }
+      .content h2 { font-size: 1.45rem; }
+      .content h3 { font-size: 1.18rem; }
+      th, td { padding: 11px 12px; }
+      .toc a { padding: 8px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <span class="eyebrow">BodySignal Planning Document</span>
+      <h1>BodySignal 신규 앱 기획서 v1.1</h1>
+      <p>로컬 기반 스트레스 지수 &amp; AI 컨디션 코치 앱</p>
+      <div class="hero-grid">
+        <div class="meta-grid"><div class="meta-card"><span class="meta-label">문서명</span><strong>BodySignal 신규 앱 기획서</strong></div><div class="meta-card"><span class="meta-label">버전</span><strong>v1.1</strong></div><div class="meta-card"><span class="meta-label">작성자</span><strong>Journey Min</strong></div><div class="meta-card"><span class="meta-label">작성일</span><strong>2026-07-05</strong></div><div class="meta-card"><span class="meta-label">개발 방향</span><strong>Flutter 기반 iOS / Android 동시 개발</strong></div><div class="meta-card"><span class="meta-label">서버 정책</span><strong>자체 서버 없음, 로컬 저장 중심</strong></div><div class="meta-card"><span class="meta-label">수익화</span><strong>무료 + Google AdMob 광고 + Pro 광고 제거 / 고급 기능</strong></div><div class="meta-card"><span class="meta-label">상태</span><strong>기획 보완안</strong></div></div>
+        <section class="summary-card">
+          <h2>핵심 방향</h2>
+          <ul><li>Flutter 기반 iOS / Android 동시 개발</li><li>자체 서버 없음, 로컬 저장 중심</li><li>무료 + Google AdMob 광고 + Pro 광고 제거 / 고급 기능</li></ul>
+        </section>
+      </div>
+    </header>
+    <div class="layout">
+      <aside>
+        <h2>목차</h2>
+        <ul class="toc"><li class="toc-level-2"><a href="#목차">목차</a></li><li class="toc-level-2"><a href="#1-기획-수정-요약">1. 기획 수정 요약</a></li><li class="toc-level-2"><a href="#2-앱-개요">2. 앱 개요</a></li><li class="toc-level-2"><a href="#3-앱-콘셉트">3. 앱 콘셉트</a></li><li class="toc-level-2"><a href="#4-사용자-문제와-앱의-해결-방향">4. 사용자 문제와 앱의 해결 방향</a></li><li class="toc-level-3"><a href="#4-1-사용자-문제">4-1. 사용자 문제</a></li><li class="toc-level-3"><a href="#4-2-해결-방향">4-2. 해결 방향</a></li><li class="toc-level-2"><a href="#5-핵심-가치-제안">5. 핵심 가치 제안</a></li><li class="toc-level-3"><a href="#5-1-사용자에게-보여줄-한-줄-가치">5-1. 사용자에게 보여줄 한 줄 가치</a></li><li class="toc-level-3"><a href="#5-2-앱스토어용-소개-문구-초안">5-2. 앱스토어용 소개 문구 초안</a></li><li class="toc-level-3"><a href="#5-3-마케팅-핵심-문구">5-3. 마케팅 핵심 문구</a></li><li class="toc-level-2"><a href="#6-앱-이름-후보">6. 앱 이름 후보</a></li><li class="toc-level-2"><a href="#7-주요-기능-개요">7. 주요 기능 개요</a></li><li class="toc-level-2"><a href="#8-스트레스-지수-기획">8. 스트레스 지수 기획</a></li><li class="toc-level-3"><a href="#8-1-기본-정의">8-1. 기본 정의</a></li><li class="toc-level-3"><a href="#8-2-표현-가이드">8-2. 표현 가이드</a></li><li class="toc-level-3"><a href="#8-3-계산-원칙">8-3. 계산 원칙</a></li><li class="toc-level-3"><a href="#8-4-기본-계산-요소">8-4. 기본 계산 요소</a></li><li class="toc-level-3"><a href="#8-5-데이터-부족-시-재가중치">8-5. 데이터 부족 시 재가중치</a></li><li class="toc-level-3"><a href="#8-6-초기-사용자-처리">8-6. 초기 사용자 처리</a></li><li class="toc-level-2"><a href="#9-회복-점수-기획">9. 회복 점수 기획</a></li><li class="toc-level-3"><a href="#9-1-스트레스-지수와-회복-점수-관계">9-1. 스트레스 지수와 회복 점수 관계</a></li><li class="toc-level-2"><a href="#10-감정-생활-기록-기획">10. 감정 / 생활 기록 기획</a></li><li class="toc-level-3"><a href="#10-1-감정-기록-항목">10-1. 감정 기록 항목</a></li><li class="toc-level-3"><a href="#10-2-생활-기록-항목">10-2. 생활 기록 항목</a></li><li class="toc-level-3"><a href="#10-3-감정과-건강-데이터-연결-예시">10-3. 감정과 건강 데이터 연결 예시</a></li><li class="toc-level-2"><a href="#11-ai-코치-기획">11. AI 코치 기획</a></li><li class="toc-level-3"><a href="#11-1-ai-기능의-역할">11-1. AI 기능의 역할</a></li><li class="toc-level-3"><a href="#11-2-지원-ai-제공자">11-2. 지원 AI 제공자</a></li><li class="toc-level-3"><a href="#11-3-ai-전송-데이터-수준">11-3. AI 전송 데이터 수준</a></li><li class="toc-level-3"><a href="#11-4-ai-전송-전-미리보기">11-4. AI 전송 전 미리보기</a></li><li class="toc-level-3"><a href="#11-5-ai-질문-예시">11-5. AI 질문 예시</a></li><li class="toc-level-2"><a href="#12-주요-화면-기획">12. 주요 화면 기획</a></li><li class="toc-level-3"><a href="#12-1-하단-탭-구조">12-1. 하단 탭 구조</a></li><li class="toc-level-3"><a href="#12-2-오늘-화면">12-2. 오늘 화면</a></li><li class="toc-level-3"><a href="#12-3-기록-화면">12-3. 기록 화면</a></li><li class="toc-level-3"><a href="#12-4-트렌드-화면">12-4. 트렌드 화면</a></li><li class="toc-level-3"><a href="#12-5-ai-코치-화면">12-5. AI 코치 화면</a></li><li class="toc-level-3"><a href="#12-6-설정-화면">12-6. 설정 화면</a></li><li class="toc-level-2"><a href="#13-google-admob-광고-기획">13. Google AdMob 광고 기획</a></li><li class="toc-level-3"><a href="#13-1-광고-도입-목적">13-1. 광고 도입 목적</a></li><li class="toc-level-3"><a href="#13-2-광고-적용-원칙">13-2. 광고 적용 원칙</a></li><li class="toc-level-3"><a href="#13-3-광고-형식별-적용-방안">13-3. 광고 형식별 적용 방안</a></li><li class="toc-level-3"><a href="#13-4-화면별-광고-배치-정책">13-4. 화면별 광고 배치 정책</a></li><li class="toc-level-3"><a href="#13-5-광고와-건강-데이터-분리-원칙">13-5. 광고와 건강 데이터 분리 원칙</a></li><li class="toc-level-3"><a href="#13-6-무료-pro-광고-정책">13-6. 무료 / Pro 광고 정책</a></li><li class="toc-level-3"><a href="#13-7-광고-동의-개인정보-안내-문구">13-7. 광고 동의 / 개인정보 안내 문구</a></li><li class="toc-level-3"><a href="#13-8-광고-ux-가이드">13-8. 광고 UX 가이드</a></li><li class="toc-level-3"><a href="#13-9-admob-구현-메모">13-9. AdMob 구현 메모</a></li><li class="toc-level-3"><a href="#13-10-광고-기능-mvp-범위">13-10. 광고 기능 MVP 범위</a></li><li class="toc-level-2"><a href="#14-수익화-정책">14. 수익화 정책</a></li><li class="toc-level-3"><a href="#14-1-기본-수익화-모델">14-1. 기본 수익화 모델</a></li><li class="toc-level-3"><a href="#14-2-무료-기능">14-2. 무료 기능</a></li><li class="toc-level-3"><a href="#14-3-pro-기능">14-3. Pro 기능</a></li><li class="toc-level-3"><a href="#14-4-구매-방식-추천">14-4. 구매 방식 추천</a></li><li class="toc-level-2"><a href="#15-개인정보-보안-기획">15. 개인정보 / 보안 기획</a></li><li class="toc-level-3"><a href="#15-1-개인정보-원칙">15-1. 개인정보 원칙</a></li><li class="toc-level-3"><a href="#15-2-개인정보-안내-문구">15-2. 개인정보 안내 문구</a></li><li class="toc-level-3"><a href="#15-3-의료-고지-문구">15-3. 의료 고지 문구</a></li><li class="toc-level-2"><a href="#16-로컬-데이터-구조">16. 로컬 데이터 구조</a></li><li class="toc-level-3"><a href="#16-1-주요-테이블-후보">16-1. 주요 테이블 후보</a></li><li class="toc-level-3"><a href="#16-2-api-key-저장-원칙">16-2. API Key 저장 원칙</a></li><li class="toc-level-2"><a href="#17-flutter-기술-구조">17. Flutter 기술 구조</a></li><li class="toc-level-3"><a href="#17-1-추천-기술-스택">17-1. 추천 기술 스택</a></li><li class="toc-level-3"><a href="#17-2-앱-구조">17-2. 앱 구조</a></li><li class="toc-level-3"><a href="#17-3-광고-모듈-분리">17-3. 광고 모듈 분리</a></li><li class="toc-level-2"><a href="#18-mvp-기능-범위">18. MVP 기능 범위</a></li><li class="toc-level-2"><a href="#19-2차-확장-기능">19. 2차 확장 기능</a></li><li class="toc-level-2"><a href="#20-온보딩-권한-흐름">20. 온보딩 / 권한 흐름</a></li><li class="toc-level-3"><a href="#20-1-온보딩-단계">20-1. 온보딩 단계</a></li><li class="toc-level-3"><a href="#20-2-권한-요청-문구-예시">20-2. 권한 요청 문구 예시</a></li><li class="toc-level-2"><a href="#21-알림-기획">21. 알림 기획</a></li><li class="toc-level-3"><a href="#21-1-알림-유형">21-1. 알림 유형</a></li><li class="toc-level-3"><a href="#21-2-알림-문구-예시">21-2. 알림 문구 예시</a></li><li class="toc-level-2"><a href="#22-스토어-심사-정책-리스크">22. 스토어 심사 / 정책 리스크</a></li><li class="toc-level-2"><a href="#23-개발-우선순위">23. 개발 우선순위</a></li><li class="toc-level-3"><a href="#23-1-1차-개발-순서">23-1. 1차 개발 순서</a></li><li class="toc-level-3"><a href="#23-2-1인-개발-예상-일정">23-2. 1인 개발 예상 일정</a></li><li class="toc-level-2"><a href="#24-최종-추천-방향">24. 최종 추천 방향</a></li><li class="toc-level-3"><a href="#24-1-최종-앱-정의">24-1. 최종 앱 정의</a></li><li class="toc-level-3"><a href="#24-2-핵심-기능-5개">24-2. 핵심 기능 5개</a></li><li class="toc-level-3"><a href="#24-3-수익화-핵심">24-3. 수익화 핵심</a></li><li class="toc-level-3"><a href="#24-4-기획-요약">24-4. 기획 요약</a></li><li class="toc-level-2"><a href="#25-참고-공식-문서">25. 참고 공식 문서</a></li></ul>
+      </aside>
+      <main class="content">
+        <h2 id="목차">목차</h2><ol><li>기획 수정 요약</li><li>앱 개요</li><li>앱 콘셉트</li><li>사용자 문제와 앱의 해결 방향</li><li>핵심 가치 제안</li><li>앱 이름 후보</li><li>주요 기능 개요</li><li>스트레스 지수 기획</li><li>회복 점수 기획</li><li>감정 / 생활 기록 기획</li><li>AI 코치 기획</li><li>주요 화면 기획</li><li>Google AdMob 광고 기획</li><li>수익화 정책</li><li>개인정보 / 보안 기획</li><li>로컬 데이터 구조</li><li>Flutter 기술 구조</li><li>MVP 기능 범위</li><li>2차 확장 기능</li><li>온보딩 / 권한 흐름</li><li>알림 기획</li><li>스토어 심사 / 정책 리스크</li><li>개발 우선순위</li><li>최종 추천 방향</li><li>참고 공식 문서</li></ol><hr><h2 id="1-기획-수정-요약">1. 기획 수정 요약</h2><p>기존 v1.0 기획서는 <strong>스트레스 지수 + 회복 점수 + 로컬 저장 + 사용자 직접 AI 선택</strong> 방향이 잘 잡혀 있었다. v1.1에서는 실제 출시를 고려하여 아래 내용을 보완한다.</p><div class="table-wrap"><table><thead><tr><th>구분</th><th>기존 방향</th><th>보완 방향</th></tr></thead><tbody><tr><td>앱 포지션</td><td>로컬 기반 스트레스 지수 &amp; AI 컨디션 코치</td><td>스트레스 지수를 더 전면에 배치하고, 회복/수면/감정/AI를 보조 기능으로 정리</td></tr><tr><td>수익화</td><td>Pro 중심</td><td>무료 앱 진입을 위해 Google AdMob 광고 추가, Pro는 광고 제거와 고급 분석 중심</td></tr><tr><td>광고 정책</td><td>건강 데이터 기반 광고 없음</td><td>AdMob 광고는 허용하되 건강 데이터·감정 기록·AI 내용은 광고 타겟팅에 사용하지 않는 원칙 명확화</td></tr><tr><td>화면 구성</td><td>오늘/기록/트렌드/AI/설정</td><td>광고 배치 가능 화면과 광고 제외 화면을 분리</td></tr><tr><td>개인정보</td><td>로컬 저장 중심</td><td>광고 SDK, AI Provider, HealthKit/Health Connect 데이터 흐름을 분리해서 설명</td></tr><tr><td>심사 대응</td><td>의료 면책 문구 중심</td><td>Apple/Google 건강 데이터 정책, 광고 정책, 개인정보 처리방침 대응 항목 추가</td></tr></tbody></table></div><hr><h2 id="2-앱-개요">2. 앱 개요</h2><div class="table-wrap"><table><thead><tr><th>항목</th><th>내용</th></tr></thead><tbody><tr><td>앱 유형</td><td>iOS / Android 건강 컨디션 분석 앱</td></tr><tr><td>개발 방식</td><td>Flutter 기반 크로스플랫폼 앱</td></tr><tr><td>건강 데이터 연동</td><td>iOS: Apple HealthKit / Android: Health Connect</td></tr><tr><td>서버 사용</td><td>자체 서버 없음</td></tr><tr><td>저장 방식</td><td>기기 내부 로컬 DB 저장</td></tr><tr><td>AI 사용 방식</td><td>사용자가 직접 AI 제공자와 API Key를 등록하여 사용</td></tr><tr><td>광고 사용</td><td>Google AdMob 적용</td></tr><tr><td>광고 정책</td><td>건강 데이터 기반 타겟팅 금지, 민감 화면 광고 최소화</td></tr><tr><td>핵심 지표</td><td>스트레스 지수</td></tr><tr><td>보조 지표</td><td>회복 점수, HRV, 안정 시 심박수, 수면, 운동, 걸음, 감정 기록</td></tr><tr><td>주요 사용자</td><td>스트레스 관리, 수면 관리, 운동 컨디션 관리에 관심 있는 일반 사용자</td></tr></tbody></table></div><p>이 앱은 건강 데이터를 바탕으로 사용자의 <strong>오늘 스트레스 지수</strong>를 계산하고, 그 원인과 회복 방향을 보여주는 앱이다. 단순히 점수만 제공하지 않고, 수면·운동·감정 기록·생활습관을 함께 분석하여 사용자가 오늘 어떤 행동을 해야 하는지 판단할 수 있게 돕는다.</p><p>앱 자체 서버는 두지 않는다. 건강 데이터, 감정 기록, 분석 결과는 기본적으로 기기 내부에 저장한다. 단, 사용자가 AI 기능을 켜거나 광고가 노출될 경우 외부 서비스와의 통신이 발생할 수 있으므로, 아래처럼 데이터 흐름을 명확히 분리한다.</p><div class="table-wrap"><table><thead><tr><th>구분</th><th>외부 통신 여부</th><th>설명</th></tr></thead><tbody><tr><td>건강 데이터 조회</td><td>없음</td><td>HealthKit / Health Connect에서 기기 내 권한 기반 조회</td></tr><tr><td>로컬 점수 계산</td><td>없음</td><td>앱 내부 규칙 엔진에서 계산</td></tr><tr><td>감정 기록 저장</td><td>없음</td><td>로컬 DB 저장</td></tr><tr><td>AI 코치</td><td>있음</td><td>사용자가 선택한 AI 제공자에게 요약 데이터 직접 전송 가능</td></tr><tr><td>Google AdMob 광고</td><td>있음</td><td>광고 로딩을 위해 Google 광고 SDK 통신 발생</td></tr><tr><td>자체 서버</td><td>없음</td><td>회원가입, 서버 저장, 서버 분석 없음</td></tr></tbody></table></div><hr><h2 id="3-앱-콘셉트">3. 앱 콘셉트</h2><blockquote><p><strong>오늘 내 몸의 스트레스 신호를 확인하고, 어떻게 쉬고 움직일지 알려주는 로컬 기반 컨디션 앱</strong></p></blockquote><p>이 앱의 중심은 <strong>스트레스 지수</strong>다. 사용자가 앱을 열었을 때 가장 먼저 확인하는 것은 “오늘 스트레스가 높은가?”이며, 그 다음에 “왜 높아졌는가?”, “오늘 무엇을 하면 좋은가?”로 이어진다.</p><div class="table-wrap"><table><thead><tr><th>구분</th><th>기획 방향</th></tr></thead><tbody><tr><td>메인 메시지</td><td>오늘 내 몸이 얼마나 부담을 받고 있는지 확인</td></tr><tr><td>핵심 지표</td><td>스트레스 지수 0~100</td></tr><tr><td>보조 지표</td><td>회복 점수, 수면 상태, 운동 부하, 감정 기록</td></tr><tr><td>핵심 행동</td><td>오늘 무리할지, 쉬어야 할지, 가볍게 움직일지 판단</td></tr><tr><td>차별점</td><td>서버 없음, 사용자 직접 AI 연결, 감정 기록과 건강 데이터 연결</td></tr><tr><td>수익화</td><td>무료 사용 가능 + 광고 노출 + Pro 광고 제거</td></tr></tbody></table></div><hr><h2 id="4-사용자-문제와-앱의-해결-방향">4. 사용자 문제와 앱의 해결 방향</h2><h3 id="4-1-사용자-문제">4-1. 사용자 문제</h3><div class="table-wrap"><table><thead><tr><th>사용자 문제</th><th>설명</th></tr></thead><tbody><tr><td>스트레스를 느끼지만 객관적으로 확인하기 어렵다</td><td>피곤하고 예민하지만 몸 상태가 실제로 나쁜지 알기 어렵다</td></tr><tr><td>수면, 운동, 심박 데이터가 흩어져 있다</td><td>건강 앱에 데이터는 있지만 해석이 부족하다</td></tr><tr><td>오늘 운동해도 되는지 판단이 어렵다</td><td>컨디션이 안 좋은 날 강한 운동을 하거나, 반대로 움직여도 되는 날 쉬어버린다</td></tr><tr><td>감정과 몸 상태의 관계를 알기 어렵다</td><td>업무 스트레스, 수면 부족, 카페인 등이 몸에 어떤 영향을 주는지 모른다</td></tr><tr><td>개인정보가 민감하다</td><td>건강 데이터와 감정 기록을 서버에 저장하는 앱은 부담스럽다</td></tr><tr><td>AI 조언은 받고 싶지만 데이터 통제가 필요하다</td><td>어떤 AI로, 어떤 데이터를 보낼지 사용자가 선택하고 싶다</td></tr></tbody></table></div><h3 id="4-2-해결-방향">4-2. 해결 방향</h3><div class="table-wrap"><table><thead><tr><th>해결 방향</th><th>설명</th></tr></thead><tbody><tr><td>스트레스 지수 제공</td><td>HRV, 심박, 수면, 운동, 감정 기반으로 오늘 점수 제공</td></tr><tr><td>원인 분석 제공</td><td>스트레스 지수가 높아진 이유를 1~3개로 설명</td></tr><tr><td>추천 행동 제공</td><td>휴식, 산책, 카페인 조절, 수면 루틴 등 행동 제안</td></tr><tr><td>감정 기록 제공</td><td>사용자가 직접 기분과 원인을 기록</td></tr><tr><td>로컬 저장 제공</td><td>건강 데이터와 기록을 기기 내부에 저장</td></tr><tr><td>AI 선택권 제공</td><td>사용자가 직접 AI Provider와 API Key를 등록</td></tr><tr><td>무료 사용 제공</td><td>광고 기반 무료 이용 가능</td></tr></tbody></table></div><hr><h2 id="5-핵심-가치-제안">5. 핵심 가치 제안</h2><h3 id="5-1-사용자에게-보여줄-한-줄-가치">5-1. 사용자에게 보여줄 한 줄 가치</h3><blockquote><p><strong>오늘 스트레스 지수를 확인하고, 내 몸에 맞는 회복 행동을 추천받으세요.</strong></p></blockquote><h3 id="5-2-앱스토어용-소개-문구-초안">5-2. 앱스토어용 소개 문구 초안</h3><pre><code>BodySignal은 건강 데이터와 감정 기록을 바탕으로
+오늘의 스트레스 지수와 회복 상태를 알려주는 컨디션 앱입니다.
+
+HRV, 안정 시 심박수, 수면, 운동, 걸음 데이터를 로컬에서 분석하고,
+사용자가 직접 기록한 감정과 생활 습관을 함께 확인할 수 있습니다.
+
+회원가입 없이 사용할 수 있으며,
+AI 기능은 사용자가 직접 선택한 AI와 API Key로만 동작합니다.</code></pre><h3 id="5-3-마케팅-핵심-문구">5-3. 마케팅 핵심 문구</h3><div class="table-wrap"><table><thead><tr><th>문구</th><th>사용 위치</th></tr></thead><tbody><tr><td>오늘 스트레스 지수를 한눈에</td><td>스토어 스크린샷 1번</td></tr><tr><td>왜 피곤한지 원인까지 확인</td><td>스토어 스크린샷 2번</td></tr><tr><td>수면·운동·감정 기록을 함께 분석</td><td>스토어 스크린샷 3번</td></tr><tr><td>서버 없이 로컬 중심으로 저장</td><td>개인정보 강조 화면</td></tr><tr><td>내가 선택한 AI로 컨디션 조언 받기</td><td>AI 기능 화면</td></tr><tr><td>무료로 시작하고, 광고 제거는 선택</td><td>수익화 안내 화면</td></tr></tbody></table></div><hr><h2 id="6-앱-이름-후보">6. 앱 이름 후보</h2><div class="table-wrap"><table><thead><tr><th>이름</th><th>설명</th><th>추천도</th></tr></thead><tbody><tr><td><strong>BodySignal</strong></td><td>몸의 신호 전체를 읽는다는 느낌, 스트레스 외 확장성 높음</td><td>★★★★★</td></tr><tr><td>StressNote</td><td>스트레스 기록·분석 중심, 직관적</td><td>★★★★☆</td></tr><tr><td>CalmIndex</td><td>스트레스 지수를 부드럽게 표현</td><td>★★★★☆</td></tr><tr><td>RestPulse</td><td>회복과 심박 기반 컨디션 느낌</td><td>★★★☆☆</td></tr><tr><td>MindPulse</td><td>마음과 생체신호를 함께 보는 느낌</td><td>★★★☆☆</td></tr><tr><td>SignalFit</td><td>건강 신호와 피트니스 결합</td><td>★★★☆☆</td></tr></tbody></table></div><p>최종 추천은 <strong>BodySignal</strong>이다. 스트레스 지수를 부각하면서도 장기적으로 회복, 수면, 운동, 감정 분석까지 확장하기 좋다.</p><hr><h2 id="7-주요-기능-개요">7. 주요 기능 개요</h2><div class="table-wrap"><table><thead><tr><th>기능</th><th>설명</th><th>MVP 포함</th></tr></thead><tbody><tr><td>스트레스 지수</td><td>HRV, 심박, 수면, 운동, 감정 기반 0~100 점수</td><td>O</td></tr><tr><td>회복 점수</td><td>오늘 무리해도 되는지 확인하는 보조 점수</td><td>O</td></tr><tr><td>오늘 요약</td><td>오늘 상태, 주요 원인, 추천 행동 표시</td><td>O</td></tr><tr><td>건강 데이터 연동</td><td>HealthKit / Health Connect 데이터 읽기</td><td>O</td></tr><tr><td>감정 기록</td><td>기분, 원인 태그, 메모, 강도 기록</td><td>O</td></tr><tr><td>수분 / 카페인 기록</td><td>스트레스와 수면에 영향을 줄 수 있는 생활 기록</td><td>O</td></tr><tr><td>트렌드 분석</td><td>주간 스트레스 변화, 원인 추세</td><td>O</td></tr><tr><td>AI 코치</td><td>사용자가 직접 등록한 AI로 조언 생성</td><td>O</td></tr><tr><td>Google AdMob 광고</td><td>무료 사용자 대상 광고 노출</td><td>O</td></tr><tr><td>Pro 광고 제거</td><td>유료 구매 시 광고 제거</td><td>2차 또는 MVP 후반</td></tr><tr><td>월간 / 연간 리포트</td><td>장기 패턴 분석</td><td>2차</td></tr><tr><td>위젯</td><td>홈 화면에서 오늘 지수 확인</td><td>2차</td></tr><tr><td>Watch / Wear OS</td><td>워치 앱 또는 컴패니언 앱</td><td>2차 이후</td></tr></tbody></table></div><hr><h2 id="8-스트레스-지수-기획">8. 스트레스 지수 기획</h2><h3 id="8-1-기본-정의">8-1. 기본 정의</h3><p>스트레스 지수는 사용자의 건강 데이터와 감정 기록을 바탕으로 산출되는 <strong>컨디션 참고 지표</strong>다. 의료 진단이나 질병 예측이 아니라, 오늘 몸이 평소보다 얼마나 부담을 받고 있는지 보여주는 앱 내부 점수로 정의한다.</p><div class="table-wrap"><table><thead><tr><th>점수 구간</th><th>상태</th><th>사용자 표현</th></tr></thead><tbody><tr><td>0~25</td><td>안정</td><td>몸이 편안한 상태입니다</td></tr><tr><td>26~50</td><td>보통</td><td>평소와 비슷한 상태입니다</td></tr><tr><td>51~75</td><td>주의</td><td>몸이 부담을 느끼는 신호가 있습니다</td></tr><tr><td>76~100</td><td>과부하</td><td>오늘은 회복을 우선하는 것이 좋습니다</td></tr></tbody></table></div><h3 id="8-2-표현-가이드">8-2. 표현 가이드</h3><div class="table-wrap"><table><thead><tr><th>사용 가능 표현</th><th>피해야 할 표현</th></tr></thead><tbody><tr><td>회복 신호가 낮습니다</td><td>자율신경 이상입니다</td></tr><tr><td>몸이 평소보다 부담을 느낄 수 있습니다</td><td>질병 위험이 있습니다</td></tr><tr><td>오늘은 무리하지 않는 것이 좋습니다</td><td>치료가 필요합니다</td></tr><tr><td>강한 운동보다 가벼운 활동을 추천합니다</td><td>우울증 가능성이 있습니다</td></tr><tr><td>수면과 휴식을 우선해보세요</td><td>심장 이상이 의심됩니다</td></tr></tbody></table></div><h3 id="8-3-계산-원칙">8-3. 계산 원칙</h3><p>스트레스 지수는 절대값이 아니라 <strong>개인 기준값 대비 변화량</strong>을 기준으로 계산한다.</p><p>예를 들어 HRV 30ms는 모든 사용자에게 나쁜 값이 아니다. 평소 HRV가 60ms인 사용자가 30ms로 떨어졌다면 스트레스 신호가 강하지만, 평소 25ms인 사용자에게 30ms는 안정적인 값일 수 있다.</p><h3 id="8-4-기본-계산-요소">8-4. 기본 계산 요소</h3><div class="table-wrap"><table><thead><tr><th>요소</th><th>기본 비중</th><th>설명</th></tr></thead><tbody><tr><td>HRV 변화</td><td>35%</td><td>최근 7일/30일 평균 대비 HRV 하락 여부</td></tr><tr><td>안정 시 심박수</td><td>20%</td><td>평소보다 안정 시 심박수가 높아졌는지</td></tr><tr><td>수면 상태</td><td>20%</td><td>수면 시간, 수면 규칙성, 중간 깨어남 여부</td></tr><tr><td>운동 / 활동 부하</td><td>15%</td><td>과도한 운동 또는 활동 부족 여부</td></tr><tr><td>감정 기록</td><td>10%</td><td>부정 감정, 스트레스 원인 태그, 강도</td></tr></tbody></table></div><h3 id="8-5-데이터-부족-시-재가중치">8-5. 데이터 부족 시 재가중치</h3><div class="table-wrap"><table><thead><tr><th>데이터 상태</th><th>처리 방식</th></tr></thead><tbody><tr><td>HRV 있음</td><td>HRV 중심 계산 사용</td></tr><tr><td>HRV 없음</td><td>안정 시 심박수, 수면, 활동 중심으로 재계산</td></tr><tr><td>수면 없음</td><td>수면 항목 제외 후 나머지 항목으로 재가중</td></tr><tr><td>운동 없음</td><td>걸음, 활동 칼로리로 대체</td></tr><tr><td>감정 기록 없음</td><td>건강 데이터 기반으로만 계산하고 기록 유도</td></tr><tr><td>데이터 거의 없음</td><td>점수 대신 “기준 데이터 수집 중” 표시</td></tr></tbody></table></div><h3 id="8-6-초기-사용자-처리">8-6. 초기 사용자 처리</h3><div class="table-wrap"><table><thead><tr><th>기간</th><th>처리 방식</th></tr></thead><tbody><tr><td>1~2일차</td><td>원본 데이터 카드 중심 표시, 점수는 참고 수준으로 표시</td></tr><tr><td>3~6일차</td><td>임시 기준값 기반 점수 제공, 정확도 안내 표시</td></tr><tr><td>7일 이후</td><td>7일 기준값 기반 주간 점수 제공</td></tr><tr><td>30일 이후</td><td>30일 기준값 기반 개인화 강화</td></tr></tbody></table></div><p>화면 문구 예시:</p><pre><code>개인 기준값을 만드는 중입니다.
+며칠간 데이터가 쌓이면 더 정확한 스트레스 지수를 제공합니다.</code></pre><hr><h2 id="9-회복-점수-기획">9. 회복 점수 기획</h2><p>스트레스 지수가 “오늘 몸이 얼마나 부담을 받는지”를 보여준다면, 회복 점수는 “오늘 무리해도 되는지”를 알려준다.</p><div class="table-wrap"><table><thead><tr><th>점수 구간</th><th>상태</th><th>설명</th></tr></thead><tbody><tr><td>80~100</td><td>회복 좋음</td><td>운동이나 집중 업무를 해도 무리 없는 상태</td></tr><tr><td>60~79</td><td>보통</td><td>평소 수준, 무리만 피하면 괜찮음</td></tr><tr><td>40~59</td><td>회복 부족</td><td>수면, 휴식, 가벼운 활동 권장</td></tr><tr><td>0~39</td><td>회복 매우 부족</td><td>강한 운동, 야근, 과로 주의</td></tr></tbody></table></div><h3 id="9-1-스트레스-지수와-회복-점수-관계">9-1. 스트레스 지수와 회복 점수 관계</h3><div class="table-wrap"><table><thead><tr><th>상태</th><th>스트레스 지수</th><th>회복 점수</th><th>사용자 안내</th></tr></thead><tbody><tr><td>안정</td><td>낮음</td><td>높음</td><td>평소 루틴 유지</td></tr><tr><td>피로 누적</td><td>보통~높음</td><td>낮음</td><td>수면과 휴식 우선</td></tr><tr><td>운동 과부하</td><td>높음</td><td>낮음</td><td>강한 운동 피하기</td></tr><tr><td>수면 부족</td><td>높음</td><td>낮음</td><td>낮잠, 카페인 조절, 조기 취침</td></tr><tr><td>컨디션 양호</td><td>낮음</td><td>높음</td><td>계획한 운동 가능</td></tr></tbody></table></div><hr><h2 id="10-감정-생활-기록-기획">10. 감정 / 생활 기록 기획</h2><p>건강 데이터만으로는 스트레스의 원인을 알기 어렵다. 사용자가 직접 감정과 생활 요인을 기록하면, 스트레스 지수의 해석력이 높아진다.</p><h3 id="10-1-감정-기록-항목">10-1. 감정 기록 항목</h3><div class="table-wrap"><table><thead><tr><th>항목</th><th>입력 방식</th><th>설명</th></tr></thead><tbody><tr><td>오늘 기분</td><td>아이콘 선택</td><td>편안함, 보통, 피곤함, 불안함, 예민함, 무기력함</td></tr><tr><td>스트레스 강도</td><td>1~5 단계</td><td>사용자가 느끼는 주관적 강도</td></tr><tr><td>원인 태그</td><td>다중 선택</td><td>업무, 인간관계, 가족, 수면부족, 운동, 카페인, 과식, 기타</td></tr><tr><td>메모</td><td>자유 입력</td><td>오늘 있었던 일, 몸 상태, 감정 기록</td></tr><tr><td>AI 분석 포함</td><td>토글</td><td>해당 기록을 AI 코치 전송 요약에 포함할지 선택</td></tr></tbody></table></div><h3 id="10-2-생활-기록-항목">10-2. 생활 기록 항목</h3><div class="table-wrap"><table><thead><tr><th>항목</th><th>입력 방식</th><th>활용</th></tr></thead><tbody><tr><td>수분 섭취</td><td>250ml / 500ml 버튼</td><td>수분 부족 안내</td></tr><tr><td>카페인</td><td>커피 / 에너지드링크 / 차</td><td>수면 영향 분석</td></tr><tr><td>명상 / 호흡</td><td>1분 / 3분 / 5분 타이머</td><td>회복 행동 기록</td></tr><tr><td>산책</td><td>수동 기록 또는 걸음 데이터</td><td>가벼운 활동 추천 효과 확인</td></tr><tr><td>운동 메모</td><td>직접 입력</td><td>건강 앱 데이터 부족 시 보완</td></tr></tbody></table></div><h3 id="10-3-감정과-건강-데이터-연결-예시">10-3. 감정과 건강 데이터 연결 예시</h3><pre><code>최근 7일 중 업무 스트레스를 기록한 날은 3일입니다.
+해당 날짜의 다음 날 HRV가 평균보다 낮아지는 경향이 있습니다.</code></pre><pre><code>수면이 5시간 미만인 날에는 스트레스 지수가 높게 나타났습니다.
+오늘은 카페인 섭취 시간을 앞당기고, 취침 루틴을 짧게 실행해보세요.</code></pre><hr><h2 id="11-ai-코치-기획">11. AI 코치 기획</h2><h3 id="11-1-ai-기능의-역할">11-1. AI 기능의 역할</h3><p>AI는 점수를 직접 계산하지 않는다. 점수 계산은 로컬 규칙 엔진이 담당하고, AI는 계산된 결과를 사용자가 이해하기 쉬운 문장으로 해석하는 역할만 수행한다.</p><div class="table-wrap"><table><thead><tr><th>구분</th><th>담당</th></tr></thead><tbody><tr><td>점수 계산</td><td>로컬 규칙 엔진</td></tr><tr><td>건강 데이터 저장</td><td>로컬 DB</td></tr><tr><td>AI 조언 생성</td><td>사용자가 선택한 AI</td></tr><tr><td>API Key 관리</td><td>사용자 직접 입력, 보안 저장소 저장</td></tr><tr><td>데이터 전송</td><td>사용자 동의 후 기기에서 AI 제공자에게 직접 전송</td></tr></tbody></table></div><h3 id="11-2-지원-ai-제공자">11-2. 지원 AI 제공자</h3><div class="table-wrap"><table><thead><tr><th>제공자</th><th>방식</th></tr></thead><tbody><tr><td>OpenAI</td><td>API Key + 모델명</td></tr><tr><td>Gemini</td><td>API Key + 모델명</td></tr><tr><td>Claude</td><td>API Key + 모델명</td></tr><tr><td>Custom API</td><td>Base URL + API Key + 모델명</td></tr><tr><td>Local AI</td><td>Ollama, LM Studio 등 OpenAI 호환 API</td></tr></tbody></table></div><h3 id="11-3-ai-전송-데이터-수준">11-3. AI 전송 데이터 수준</h3><div class="table-wrap"><table><thead><tr><th>수준</th><th>설명</th><th>기본값</th></tr></thead><tbody><tr><td>최소</td><td>오늘 점수, 상태, 요약 원인만 전송</td><td>O</td></tr><tr><td>보통</td><td>최근 7일 요약 포함</td><td></td></tr><tr><td>상세</td><td>감정 기록, 수면/운동 요약 포함</td><td></td></tr><tr><td>직접 선택</td><td>사용자가 항목별로 선택</td><td></td></tr></tbody></table></div><h3 id="11-4-ai-전송-전-미리보기">11-4. AI 전송 전 미리보기</h3><p>AI 호출 전에는 반드시 전송 내용을 미리 보여준다.</p><pre><code>AI에게 전송되는 데이터 미리보기
+
+오늘 스트레스 지수: 72
+회복 점수: 45
+HRV: 최근 평균보다 낮음
+수면: 4시간 30분
+운동: 강도 높은 운동 없음
+감정 기록: 피곤함, 업무 스트레스
+
+위 내용을 선택한 AI 제공자에게 전송하여 조언을 생성합니다.</code></pre><h3 id="11-5-ai-질문-예시">11-5. AI 질문 예시</h3><div class="table-wrap"><table><thead><tr><th>질문</th><th>설명</th></tr></thead><tbody><tr><td>오늘 왜 피곤하지?</td><td>HRV, 수면, 심박 기반 해석</td></tr><tr><td>오늘 운동해도 될까?</td><td>회복 점수와 운동 부하 기반 추천</td></tr><tr><td>이번 주 스트레스 원인은?</td><td>트렌드와 감정 태그 분석</td></tr><tr><td>수면 부족이 영향 있었어?</td><td>수면과 HRV 관계 설명</td></tr><tr><td>오늘 어떻게 쉬면 좋을까?</td><td>휴식 루틴 추천</td></tr></tbody></table></div><hr><h2 id="12-주요-화면-기획">12. 주요 화면 기획</h2><h3 id="12-1-하단-탭-구조">12-1. 하단 탭 구조</h3><div class="table-wrap"><table><thead><tr><th>탭</th><th>화면명</th><th>설명</th><th>광고 노출</th></tr></thead><tbody><tr><td>1</td><td>오늘</td><td>오늘 스트레스 지수와 컨디션 요약</td><td>하단 배너 가능</td></tr><tr><td>2</td><td>기록</td><td>감정, 수분, 카페인, 메모 기록</td><td>광고 제외 권장</td></tr><tr><td>3</td><td>트렌드</td><td>주간/월간 스트레스 변화</td><td>하단 배너 또는 네이티브 가능</td></tr><tr><td>4</td><td>AI 코치</td><td>사용자가 선택한 AI로 조언 받기</td><td>광고 제외 권장</td></tr><tr><td>5</td><td>설정</td><td>건강 권한, AI 설정, 개인정보, 데이터 삭제</td><td>광고 제외</td></tr></tbody></table></div><h3 id="12-2-오늘-화면">12-2. 오늘 화면</h3><p><strong>목적</strong>: 앱 진입 즉시 오늘의 스트레스·회복 상태를 확인하고 행동 추천을 받는다.</p><div class="table-wrap"><table><thead><tr><th>영역</th><th>내용</th></tr></thead><tbody><tr><td>상단 상태 카드</td><td>스트레스 지수, 회복 점수, 상태 문구</td></tr><tr><td>원인 카드</td><td>HRV 하락, 수면 부족, 운동 과부하 등</td></tr><tr><td>주요 지표 카드</td><td>HRV, 안정 시 심박수, 수면, 걸음, 운동</td></tr><tr><td>추천 행동 카드</td><td>휴식, 산책, 카페인 줄이기, 수면 루틴</td></tr><tr><td>빠른 기록 카드</td><td>감정 기록, 수분, 카페인, 메모</td></tr><tr><td>AI 코치 버튼</td><td>오늘 상태를 AI에게 물어보기</td></tr><tr><td>광고 영역</td><td>무료 사용자 하단 배너, Pro 사용자는 미노출</td></tr></tbody></table></div><p>오늘 화면 예시:</p><pre><code>오늘은 주의가 필요한 날이에요
+
+스트레스 지수 71
+회복 점수 46
+
+HRV가 평소보다 낮고, 수면 시간이 부족합니다.
+오늘은 강한 운동보다 가벼운 활동과 휴식을 추천합니다.</code></pre><h3 id="12-3-기록-화면">12-3. 기록 화면</h3><p><strong>목적</strong>: 건강 데이터만으로 알 수 없는 감정·생활습관·컨디션 원인을 사용자가 직접 기록한다.</p><p>광고는 노출하지 않는 것을 권장한다. 감정 입력과 메모 작성 중 광고가 보이면 사용자가 민감한 기록을 상업적으로 이용한다고 느낄 수 있다.</p><h3 id="12-4-트렌드-화면">12-4. 트렌드 화면</h3><p><strong>목적</strong>: 사용자가 자신의 스트레스 패턴을 이해하도록 돕는다.</p><div class="table-wrap"><table><thead><tr><th>구분</th><th>내용</th></tr></thead><tbody><tr><td>주간</td><td>일별 스트레스 지수, 회복 점수</td></tr><tr><td>월간</td><td>스트레스 높은 날, 안정적인 날, 수면 부족일</td></tr><tr><td>레벨 분류</td><td>안정/보통/주의/과부하 비율</td></tr><tr><td>원인 분석</td><td>수면, 운동, 감정 태그와의 연관성</td></tr><tr><td>광고 영역</td><td>무료 사용자는 섹션 사이 네이티브 광고 또는 하단 배너 가능</td></tr></tbody></table></div><h3 id="12-5-ai-코치-화면">12-5. AI 코치 화면</h3><p><strong>목적</strong>: 사용자가 등록한 AI를 통해 오늘 상태를 자연어로 해석하고 조언을 받는다.</p><p>AI 코치 화면은 광고 제외를 권장한다. 사용자가 AI에게 전송할 건강 요약과 감정 메모를 검토하는 화면이므로 광고 노출을 최소화하는 것이 신뢰에 유리하다.</p><h3 id="12-6-설정-화면">12-6. 설정 화면</h3><div class="table-wrap"><table><thead><tr><th>영역</th><th>기능</th></tr></thead><tbody><tr><td>건강 데이터 권한</td><td>HealthKit / Health Connect 권한 상태 확인</td></tr><tr><td>AI 설정</td><td>제공자, API Key, 모델명, Base URL</td></tr><tr><td>광고 설정</td><td>맞춤 광고 동의 상태, 광고 제거 구매 안내</td></tr><tr><td>개인정보</td><td>로컬 저장 안내, AI 전송 안내, 광고 SDK 안내</td></tr><tr><td>데이터 관리</td><td>전체 데이터 삭제, AI 기록 삭제</td></tr><tr><td>알림</td><td>아침 컨디션 알림, 저녁 회고 알림</td></tr><tr><td>고지 문구</td><td>의료 진단이 아닌 참고용 안내</td></tr></tbody></table></div><hr><h2 id="13-google-admob-광고-기획">13. Google AdMob 광고 기획</h2><h3 id="13-1-광고-도입-목적">13-1. 광고 도입 목적</h3><p>앱은 서버 없이 동작하지만, 무료 사용자를 확보하려면 기본 수익화 수단이 필요하다. 광고는 무료 사용자의 진입장벽을 낮추고, Pro 광고 제거 구매로 전환할 수 있는 구조를 만든다.</p><div class="table-wrap"><table><thead><tr><th>목적</th><th>설명</th></tr></thead><tbody><tr><td>무료 사용자 확보</td><td>앱 설치와 기본 사용 진입장벽 낮춤</td></tr><tr><td>운영 수익 확보</td><td>개발 유지보수, 스토어 운영 비용 보전</td></tr><tr><td>Pro 전환 유도</td><td>광고 제거 + 고급 분석 구매 동기 제공</td></tr><tr><td>AI 비용 부담 회피</td><td>AI는 사용자 개인 API Key 사용, 앱은 AI 비용 부담 없음</td></tr></tbody></table></div><h3 id="13-2-광고-적용-원칙">13-2. 광고 적용 원칙</h3><p>이 앱은 건강 데이터와 감정 기록을 다루므로 광고 설계를 보수적으로 해야 한다.</p><div class="table-wrap"><table><thead><tr><th>원칙</th><th>설명</th></tr></thead><tbody><tr><td>건강 데이터 기반 광고 금지</td><td>HRV, 수면, 스트레스 지수, 감정 기록을 광고 타겟팅에 사용하지 않음</td></tr><tr><td>광고 SDK와 건강 데이터 분리</td><td>광고 SDK에 건강 데이터, 감정 메모, AI 질문 내용을 전달하지 않음</td></tr><tr><td>민감 입력 화면 광고 제외</td><td>감정 기록, AI 전송 미리보기, 설정/개인정보 화면에는 광고 미노출</td></tr><tr><td>전면 광고 최소화</td><td>건강 앱에서는 흐름을 막는 전면 광고를 MVP에서 제외 권장</td></tr><tr><td>개인화 광고 보수적 운영</td><td>기본은 비개인화 광고 또는 사용자 동의 기반으로 운영 검토</td></tr><tr><td>광고 제거 제공</td><td>Pro 구매 시 모든 광고 제거</td></tr><tr><td>광고 표기 명확화</td><td>광고 영역을 콘텐츠처럼 위장하지 않음</td></tr></tbody></table></div><h3 id="13-3-광고-형식별-적용-방안">13-3. 광고 형식별 적용 방안</h3><div class="table-wrap"><table><thead><tr><th>광고 형식</th><th>적용 여부</th><th>권장 위치</th><th>설명</th></tr></thead><tbody><tr><td>Banner Ad</td><td>적용</td><td>오늘 화면 하단, 트렌드 화면 하단</td><td>가장 안전한 기본 광고 형태</td></tr><tr><td>Native Ad</td><td>선택</td><td>트렌드 목록 섹션 사이</td><td>콘텐츠와 혼동되지 않게 광고 표기 필수</td></tr><tr><td>Interstitial Ad</td><td>MVP 제외 권장</td><td>사용하지 않음</td><td>건강/감정 앱에서 사용자 경험 저하 가능</td></tr><tr><td>Rewarded Ad</td><td>2차 검토</td><td>AI 리포트 1회 추가 보기 등</td><td>건강 데이터 이용과 직접 연결하지 않도록 주의</td></tr><tr><td>App Open Ad</td><td>제외 권장</td><td>사용하지 않음</td><td>앱 실행 직후 스트레스 지수 확인 경험을 방해함</td></tr></tbody></table></div><h3 id="13-4-화면별-광고-배치-정책">13-4. 화면별 광고 배치 정책</h3><div class="table-wrap"><table><thead><tr><th>화면</th><th>광고 여부</th><th>광고 방식</th><th>이유</th></tr></thead><tbody><tr><td>온보딩</td><td>미노출</td><td>없음</td><td>권한/개인정보 동의 집중 필요</td></tr><tr><td>오늘</td><td>노출 가능</td><td>하단 배너</td><td>핵심 콘텐츠를 방해하지 않는 범위</td></tr><tr><td>스트레스 상세</td><td>제한적 노출</td><td>하단 배너 가능</td><td>민감한 상세 해석 근처에는 광고 배치 금지</td></tr><tr><td>기록</td><td>미노출 권장</td><td>없음</td><td>감정/메모 입력 화면은 민감함</td></tr><tr><td>트렌드</td><td>노출 가능</td><td>하단 배너 또는 네이티브</td><td>분석 결과 확인 화면, 광고 배치 여지 있음</td></tr><tr><td>AI 코치</td><td>미노출 권장</td><td>없음</td><td>AI 전송 내용과 광고 혼동 방지</td></tr><tr><td>설정</td><td>미노출</td><td>없음</td><td>개인정보/권한/결제 관련 화면</td></tr><tr><td>Pro 안내</td><td>미노출</td><td>없음</td><td>결제 전환 화면은 명확성 필요</td></tr></tbody></table></div><h3 id="13-5-광고와-건강-데이터-분리-원칙">13-5. 광고와 건강 데이터 분리 원칙</h3><p>광고 SDK에는 아래 정보를 전달하지 않는다.</p><div class="table-wrap"><table><thead><tr><th>전달 금지 데이터</th><th>예시</th></tr></thead><tbody><tr><td>건강 원천 데이터</td><td>HRV, 심박수, 수면 시간, 걸음, 운동 기록</td></tr><tr><td>분석 결과</td><td>스트레스 지수, 회복 점수, 과부하 상태</td></tr><tr><td>감정 기록</td><td>불안함, 무기력함, 업무 스트레스, 메모 내용</td></tr><tr><td>AI 대화 내용</td><td>질문, 답변, 전송 요약 데이터</td></tr><tr><td>건강 기반 세그먼트</td><td>수면 부족 사용자, 스트레스 높은 사용자 등</td></tr><tr><td>개인 식별 정보</td><td>이름, 이메일, API Key, 위치, 기기 내 개인 데이터</td></tr></tbody></table></div><p>광고 SDK에는 앱 운영에 필요한 최소한의 광고 요청 정보만 전달한다. 앱 내부 건강 데이터와 광고 요청은 코드 레벨에서도 모듈을 분리한다.</p><h3 id="13-6-무료-pro-광고-정책">13-6. 무료 / Pro 광고 정책</h3><div class="table-wrap"><table><thead><tr><th>사용자 구분</th><th>광고 정책</th></tr></thead><tbody><tr><td>무료 사용자</td><td>오늘/트렌드 화면 중심으로 제한적 광고 노출</td></tr><tr><td>Pro 사용자</td><td>모든 광고 제거</td></tr><tr><td>AI 미사용 사용자</td><td>광고 정책 동일</td></tr><tr><td>AI 사용 사용자</td><td>AI 코치 화면 광고 미노출 권장</td></tr><tr><td>신규 사용자</td><td>온보딩 완료 전 광고 미노출</td></tr></tbody></table></div><h3 id="13-7-광고-동의-개인정보-안내-문구">13-7. 광고 동의 / 개인정보 안내 문구</h3><p>설정 화면 또는 개인정보 안내 화면에 아래 문구를 포함한다.</p><pre><code>이 앱은 무료 서비스 운영을 위해 Google AdMob 광고를 표시할 수 있습니다.
+
+건강 데이터, 감정 기록, 스트레스 지수, AI 대화 내용은
+광고 타겟팅 목적으로 사용하지 않습니다.
+
+광고 제공 과정에서 Google AdMob SDK가 광고 표시를 위한 기기 정보 등을 처리할 수 있습니다.
+자세한 내용은 개인정보 처리방침에서 확인할 수 있습니다.</code></pre><h3 id="13-8-광고-ux-가이드">13-8. 광고 UX 가이드</h3><div class="table-wrap"><table><thead><tr><th>항목</th><th>가이드</th></tr></thead><tbody><tr><td>광고 위치</td><td>화면 하단 고정 또는 트렌드 섹션 사이</td></tr><tr><td>광고 높이</td><td>콘텐츠를 가리지 않는 범위</td></tr><tr><td>광고 표기</td><td>“광고” 또는 AdChoices 표기 유지</td></tr><tr><td>광고 새로고침</td><td>과도한 새로고침 금지</td></tr><tr><td>클릭 유도</td><td>광고 클릭을 유도하는 문구 금지</td></tr><tr><td>스트레스 점수 주변</td><td>점수 바로 옆에 광고 배치 금지</td></tr><tr><td>추천 행동 카드 주변</td><td>건강 조언과 광고가 혼동되지 않게 간격 유지</td></tr></tbody></table></div><h3 id="13-9-admob-구현-메모">13-9. AdMob 구현 메모</h3><div class="table-wrap"><table><thead><tr><th>항목</th><th>구현 방향</th></tr></thead><tbody><tr><td>Flutter 패키지</td><td><code>google_mobile_ads</code></td></tr><tr><td>광고 설정 관리</td><td><code>AdService</code>, <code>ConsentService</code>, <code>AdVisibilityPolicy</code> 분리</td></tr><tr><td>Pro 광고 제거</td><td>로컬 entitlement 또는 인앱결제 상태로 광고 미노출</td></tr><tr><td>개발/테스트</td><td>테스트 광고 ID 사용, 실제 광고 ID는 release flavor에서만 사용</td></tr><tr><td>개인정보 동의</td><td>지역별 동의 플로우 적용 검토</td></tr><tr><td>로그</td><td>광고 요청 로그에 건강 데이터 포함 금지</td></tr><tr><td>Crash/Analytics</td><td>건강 데이터와 광고 이벤트 연결 금지</td></tr></tbody></table></div><h3 id="13-10-광고-기능-mvp-범위">13-10. 광고 기능 MVP 범위</h3><div class="table-wrap"><table><thead><tr><th>기능</th><th>MVP 포함 여부</th></tr></thead><tbody><tr><td>AdMob SDK 연동</td><td>O</td></tr><tr><td>오늘 화면 하단 배너</td><td>O</td></tr><tr><td>트렌드 화면 하단 배너</td><td>O</td></tr><tr><td>광고 제거 플래그 구조</td><td>O</td></tr><tr><td>실제 인앱결제 광고 제거</td><td>MVP 후반 또는 2차</td></tr><tr><td>네이티브 광고</td><td>2차</td></tr><tr><td>리워드 광고</td><td>2차 검토</td></tr><tr><td>전면 광고</td><td>제외</td></tr><tr><td>App Open 광고</td><td>제외</td></tr></tbody></table></div><hr><h2 id="14-수익화-정책">14. 수익화 정책</h2><h3 id="14-1-기본-수익화-모델">14-1. 기본 수익화 모델</h3><div class="table-wrap"><table><thead><tr><th>구분</th><th>설명</th></tr></thead><tbody><tr><td>무료 + 광고</td><td>기본 기능 무료 제공, 일부 화면에 광고 노출</td></tr><tr><td>Pro 광고 제거</td><td>일회성 구매 또는 구독으로 광고 제거</td></tr><tr><td>Pro 고급 분석</td><td>월간/연간 분석, 상관 분석, AI 주간 리포트 제공</td></tr><tr><td>사용자 AI Key</td><td>AI 비용은 사용자가 선택한 AI 제공자 계정에서 부담</td></tr></tbody></table></div><h3 id="14-2-무료-기능">14-2. 무료 기능</h3><div class="table-wrap"><table><thead><tr><th>기능</th><th>무료 제공</th></tr></thead><tbody><tr><td>오늘 스트레스 지수</td><td>O</td></tr><tr><td>기본 회복 점수</td><td>O</td></tr><tr><td>오늘 원인 분석 1~3개</td><td>O</td></tr><tr><td>최근 7일 트렌드</td><td>O</td></tr><tr><td>감정 기록</td><td>O</td></tr><tr><td>수분 / 카페인 기록</td><td>O</td></tr><tr><td>기본 추천 행동</td><td>O</td></tr><tr><td>AI Provider 직접 입력</td><td>O</td></tr><tr><td>AI 오늘 조언</td><td>횟수 제한 가능</td></tr><tr><td>광고 노출</td><td>O</td></tr></tbody></table></div><h3 id="14-3-pro-기능">14-3. Pro 기능</h3><div class="table-wrap"><table><thead><tr><th>기능</th><th>Pro 제공</th></tr></thead><tbody><tr><td>광고 제거</td><td>O</td></tr><tr><td>월간 / 연간 트렌드</td><td>O</td></tr><tr><td>상세 원인 분석</td><td>O</td></tr><tr><td>감정-건강 데이터 상관 분석</td><td>O</td></tr><tr><td>AI 주간 리포트</td><td>O</td></tr><tr><td>AI 질문 템플릿 확장</td><td>O</td></tr><tr><td>커스텀 테마</td><td>O</td></tr><tr><td>위젯 고급형</td><td>O</td></tr><tr><td>데이터 내보내기</td><td>O</td></tr><tr><td>로컬 백업 / 복원</td><td>O</td></tr></tbody></table></div><h3 id="14-4-구매-방식-추천">14-4. 구매 방식 추천</h3><p>초기에는 사용자가 건강 앱에 구독료를 바로 지불하기 부담스러울 수 있다. 따라서 1차는 아래 구조를 추천한다.</p><div class="table-wrap"><table><thead><tr><th>단계</th><th>방식</th></tr></thead><tbody><tr><td>MVP</td><td>무료 + 광고</td></tr><tr><td>1차 수익화</td><td>일회성 Pro 구매: 광고 제거 + 고급 분석 일부</td></tr><tr><td>2차 수익화</td><td>구독형 Pro: AI 주간 리포트, 장기 분석, 고급 테마</td></tr></tbody></table></div><hr><h2 id="15-개인정보-보안-기획">15. 개인정보 / 보안 기획</h2><h3 id="15-1-개인정보-원칙">15-1. 개인정보 원칙</h3><div class="table-wrap"><table><thead><tr><th>항목</th><th>정책</th></tr></thead><tbody><tr><td>회원가입</td><td>없음</td></tr><tr><td>자체 서버</td><td>없음</td></tr><tr><td>건강 데이터 저장</td><td>기기 내부 로컬 DB</td></tr><tr><td>감정 기록 저장</td><td>기기 내부 로컬 DB</td></tr><tr><td>API Key 저장</td><td>iOS Keychain / Android Keystore 기반 보안 저장소</td></tr><tr><td>AI 사용</td><td>사용자가 직접 켠 경우에만</td></tr><tr><td>AI 데이터 전송</td><td>사용자 선택 AI 제공자에게 직접 전송</td></tr><tr><td>광고 데이터</td><td>건강 데이터와 분리</td></tr><tr><td>데이터 삭제</td><td>전체 삭제 기능 제공</td></tr><tr><td>백업</td><td>MVP 이후 로컬 암호화 백업 검토</td></tr></tbody></table></div><h3 id="15-2-개인정보-안내-문구">15-2. 개인정보 안내 문구</h3><pre><code>이 앱은 건강 데이터를 자체 서버에 저장하지 않습니다.
+모든 분석 데이터와 기록은 사용자의 기기 안에 저장됩니다.
+
+AI 기능을 켜는 경우, 사용자가 선택한 AI 제공자에게
+요약 데이터가 전송될 수 있습니다.
+전송 전 내용을 확인하고 직접 실행할 수 있습니다.
+
+무료 서비스 운영을 위해 일부 화면에 광고가 표시될 수 있습니다.
+건강 데이터와 감정 기록은 광고 타겟팅 목적으로 사용하지 않습니다.</code></pre><h3 id="15-3-의료-고지-문구">15-3. 의료 고지 문구</h3><pre><code>BodySignal에서 제공하는 스트레스 지수와 회복 점수는
+건강 관리를 위한 참고용 정보입니다.
+
+이 앱은 질병의 진단, 치료, 예방을 목적으로 하지 않습니다.
+건강 이상이 있거나 의학적 판단이 필요한 경우 전문가와 상담하세요.</code></pre><hr><h2 id="16-로컬-데이터-구조">16. 로컬 데이터 구조</h2><h3 id="16-1-주요-테이블-후보">16-1. 주요 테이블 후보</h3><div class="table-wrap"><table><thead><tr><th>테이블</th><th>용도</th></tr></thead><tbody><tr><td><code>health_sample_cache</code></td><td>HealthKit / Health Connect에서 읽은 원천 데이터 캐시</td></tr><tr><td><code>daily_metric</code></td><td>일별 HRV, 심박, 수면, 걸음, 운동 요약</td></tr><tr><td><code>user_baseline</code></td><td>7일/30일/90일 개인 기준값</td></tr><tr><td><code>stress_score_history</code></td><td>계산된 스트레스 지수 이력</td></tr><tr><td><code>recovery_score_history</code></td><td>계산된 회복 점수 이력</td></tr><tr><td><code>emotion_log</code></td><td>감정, 원인 태그, 메모 기록</td></tr><tr><td><code>manual_life_log</code></td><td>수분, 카페인, 명상, 산책 등 수동 기록</td></tr><tr><td><code>ai_provider_config</code></td><td>AI 제공자, 모델명, Base URL 설정</td></tr><tr><td><code>ai_insight_history</code></td><td>AI 조언 이력</td></tr><tr><td><code>ad_setting</code></td><td>광고 동의 상태, 광고 제거 여부</td></tr><tr><td><code>app_setting</code></td><td>테마, 알림, 단위, 언어 설정</td></tr></tbody></table></div><h3 id="16-2-api-key-저장-원칙">16-2. API Key 저장 원칙</h3><p><code>ai_provider_config</code> 테이블에는 API Key를 저장하지 않는다. API Key는 <code>flutter_secure_storage</code>를 통해 iOS Keychain / Android Keystore 기반으로 저장한다.</p><div class="table-wrap"><table><thead><tr><th>항목</th><th>저장 위치</th></tr></thead><tbody><tr><td>AI Provider</td><td>Local DB</td></tr><tr><td>Model Name</td><td>Local DB</td></tr><tr><td>Base URL</td><td>Local DB</td></tr><tr><td>API Key</td><td>Secure Storage</td></tr><tr><td>광고 제거 여부</td><td>Local DB + Store receipt/entitlement 확인</td></tr></tbody></table></div><hr><h2 id="17-flutter-기술-구조">17. Flutter 기술 구조</h2><h3 id="17-1-추천-기술-스택">17-1. 추천 기술 스택</h3><div class="table-wrap"><table><thead><tr><th>영역</th><th>추천 기술</th></tr></thead><tbody><tr><td>App Framework</td><td>Flutter</td></tr><tr><td>상태관리</td><td>Riverpod 또는 Bloc</td></tr><tr><td>로컬 DB</td><td>Drift + SQLite</td></tr><tr><td>보안 저장소</td><td>flutter_secure_storage</td></tr><tr><td>건강 데이터 연동</td><td>health 패키지 우선 검토, 부족 시 Native Bridge</td></tr><tr><td>iOS 건강 데이터</td><td>HealthKit</td></tr><tr><td>Android 건강 데이터</td><td>Health Connect</td></tr><tr><td>차트</td><td>fl_chart 또는 CustomPainter</td></tr><tr><td>광고</td><td>google_mobile_ads</td></tr><tr><td>인앱결제</td><td>in_app_purchase</td></tr><tr><td>로컬 알림</td><td>flutter_local_notifications</td></tr><tr><td>AI API 호출</td><td>dio 또는 http</td></tr><tr><td>백그라운드 처리</td><td>workmanager + 플랫폼별 제한 대응</td></tr></tbody></table></div><h3 id="17-2-앱-구조">17-2. 앱 구조</h3><pre><code>lib/
+ ├─ app/
+ │   ├─ router/
+ │   ├─ theme/
+ │   └─ app.dart
+ │
+ ├─ presentation/
+ │   ├─ today/
+ │   ├─ record/
+ │   ├─ trend/
+ │   ├─ ai_coach/
+ │   ├─ settings/
+ │   └─ paywall/
+ │
+ ├─ domain/
+ │   ├─ health/
+ │   ├─ stress_score/
+ │   ├─ recovery_score/
+ │   ├─ insight/
+ │   ├─ ai/
+ │   └─ ads/
+ │
+ ├─ data/
+ │   ├─ local_db/
+ │   ├─ health_repository/
+ │   ├─ ai_repository/
+ │   ├─ ad_repository/
+ │   └─ secure_storage/
+ │
+ └─ platform/
+     ├─ ios_healthkit/
+     └─ android_health_connect/</code></pre><h3 id="17-3-광고-모듈-분리">17-3. 광고 모듈 분리</h3><pre><code>AdService
+ ├─ loadBannerAd()
+ ├─ disposeBannerAd()
+ ├─ canShowAds()
+ └─ isProUser()
+
+AdVisibilityPolicy
+ ├─ allowOnTodayScreen()
+ ├─ allowOnTrendScreen()
+ ├─ blockOnRecordScreen()
+ ├─ blockOnAiCoachScreen()
+ └─ blockOnSettingsScreen()</code></pre><p>광고 모듈은 건강 데이터 모듈을 참조하지 않도록 한다. 광고 노출 여부는 화면 단위 정책과 Pro 여부만 기준으로 판단한다.</p><hr><h2 id="18-mvp-기능-범위">18. MVP 기능 범위</h2><div class="table-wrap"><table><thead><tr><th>기능</th><th>MVP 포함</th><th>비고</th></tr></thead><tbody><tr><td>iOS HealthKit 연동</td><td>O</td><td>권한 요청, HRV/심박/수면/운동 조회</td></tr><tr><td>Android Health Connect 연동</td><td>O</td><td>기기별 데이터 부족 대응 필요</td></tr><tr><td>건강 데이터 권한 요청</td><td>O</td><td>온보딩에서 안내</td></tr><tr><td>HRV 조회</td><td>O</td><td>없을 경우 대체 계산</td></tr><tr><td>안정 시 심박수 조회</td><td>O</td><td>기본 지표</td></tr><tr><td>수면 조회</td><td>O</td><td>수면 시간 중심</td></tr><tr><td>걸음 / 운동 조회</td><td>O</td><td>활동 부하 계산</td></tr><tr><td>스트레스 지수 계산</td><td>O</td><td>로컬 규칙 엔진</td></tr><tr><td>회복 점수 계산</td><td>O</td><td>스트레스 지수 보조</td></tr><tr><td>오늘 화면</td><td>O</td><td>핵심 화면</td></tr><tr><td>감정 기록</td><td>O</td><td>간단 기록 중심</td></tr><tr><td>주간 트렌드</td><td>O</td><td>최근 7일</td></tr><tr><td>AI Provider 설정</td><td>O</td><td>사용자 API Key</td></tr><tr><td>AI 오늘 조언</td><td>O</td><td>전송 전 미리보기</td></tr><tr><td>AdMob 배너 광고</td><td>O</td><td>오늘/트렌드 화면</td></tr><tr><td>광고 제거 플래그 구조</td><td>O</td><td>Pro 확장 대비</td></tr><tr><td>개인정보 안내</td><td>O</td><td>필수</td></tr><tr><td>데이터 전체 삭제</td><td>O</td><td>필수</td></tr><tr><td>인앱결제</td><td>선택</td><td>MVP 후반 가능</td></tr><tr><td>월간/연간 분석</td><td>X</td><td>2차</td></tr><tr><td>위젯</td><td>X</td><td>2차</td></tr><tr><td>Watch / Wear OS</td><td>X</td><td>2차 이후</td></tr></tbody></table></div><hr><h2 id="19-2차-확장-기능">19. 2차 확장 기능</h2><div class="table-wrap"><table><thead><tr><th>기능</th><th>설명</th></tr></thead><tbody><tr><td>월간/연간 트렌드</td><td>장기 스트레스 패턴 분석</td></tr><tr><td>감정 태그 분석</td><td>업무/수면/운동 등 원인별 분석</td></tr><tr><td>회복 루틴</td><td>호흡, 명상, 산책, 수면 루틴</td></tr><tr><td>AI 주간 리포트</td><td>최근 7일 요약과 다음 주 관리 팁</td></tr><tr><td>광고 제거 Pro</td><td>일회성 구매 또는 구독</td></tr><tr><td>커스텀 테마</td><td>상태별 색상, 캐릭터, 다크모드</td></tr><tr><td>iOS 위젯</td><td>오늘 스트레스 지수 표시</td></tr><tr><td>Android 위젯</td><td>오늘 컨디션 카드</td></tr><tr><td>로컬 백업 / 복원</td><td>암호화 파일 내보내기/가져오기</td></tr><tr><td>Wear OS / Apple Watch</td><td>별도 컴패니언 앱 검토</td></tr></tbody></table></div><hr><h2 id="20-온보딩-권한-흐름">20. 온보딩 / 권한 흐름</h2><h3 id="20-1-온보딩-단계">20-1. 온보딩 단계</h3><div class="table-wrap"><table><thead><tr><th>단계</th><th>화면</th><th>내용</th></tr></thead><tbody><tr><td>1</td><td>앱 소개</td><td>오늘 스트레스 지수와 회복 상태를 확인하는 앱</td></tr><tr><td>2</td><td>개인정보 안내</td><td>서버 없음, 로컬 저장 중심, 광고/AI 외부 통신 안내</td></tr><tr><td>3</td><td>의료 고지</td><td>진단/치료 목적이 아닌 참고용 정보</td></tr><tr><td>4</td><td>건강 데이터 권한</td><td>HRV, 심박, 수면, 운동, 걸음 권한 요청</td></tr><tr><td>5</td><td>광고 안내</td><td>무료 사용 시 일부 화면 광고 표시 안내</td></tr><tr><td>6</td><td>AI 선택</td><td>AI 기능은 선택 사항, 직접 API Key 등록 필요</td></tr><tr><td>7</td><td>기준값 수집 안내</td><td>며칠간 데이터가 쌓이면 점수 정확도 향상</td></tr></tbody></table></div><h3 id="20-2-권한-요청-문구-예시">20-2. 권한 요청 문구 예시</h3><pre><code>스트레스 지수 계산을 위해 건강 데이터 접근 권한이 필요합니다.
+
+사용 데이터:
+- HRV
+- 안정 시 심박수
+- 수면 시간
+- 걸음 수
+- 운동 기록
+
+이 데이터는 기기 내부에서 분석되며,
+앱 자체 서버로 전송되지 않습니다.</code></pre><hr><h2 id="21-알림-기획">21. 알림 기획</h2><h3 id="21-1-알림-유형">21-1. 알림 유형</h3><div class="table-wrap"><table><thead><tr><th>알림</th><th>시점</th><th>내용</th></tr></thead><tbody><tr><td>아침 컨디션 알림</td><td>오전 7~9시</td><td>오늘 스트레스 지수 확인 유도</td></tr><tr><td>저녁 회고 알림</td><td>오후 8~10시</td><td>감정 기록, 수분/카페인 기록 유도</td></tr><tr><td>회복 추천 알림</td><td>스트레스 높음 감지 시</td><td>휴식, 산책, 수면 루틴 추천</td></tr><tr><td>AI 리포트 알림</td><td>주 1회</td><td>주간 컨디션 요약 생성 유도</td></tr></tbody></table></div><h3 id="21-2-알림-문구-예시">21-2. 알림 문구 예시</h3><pre><code>오늘 스트레스 지수를 확인해보세요.
+수면과 회복 상태를 바탕으로 오늘의 컨디션을 정리했어요.</code></pre><pre><code>오늘 하루는 어땠나요?
+감정 기록을 남기면 스트레스 패턴을 더 잘 확인할 수 있어요.</code></pre><hr><h2 id="22-스토어-심사-정책-리스크">22. 스토어 심사 / 정책 리스크</h2><div class="table-wrap"><table><thead><tr><th>구분</th><th>리스크</th><th>대응 방향</th></tr></thead><tbody><tr><td>HealthKit 데이터 광고 사용</td><td>iOS에서 HealthKit 데이터는 광고/마케팅 목적으로 사용 금지</td><td>건강 데이터와 광고 SDK 완전 분리</td></tr><tr><td>Health Connect 권한</td><td>Google Play에서 건강 앱 선언, 개인정보 처리방침 필요</td><td>Play Console Health Apps declaration 작성</td></tr><tr><td>건강 데이터 과다 권한</td><td>필요 없는 권한 요청 시 거절 가능</td><td>MVP 기능에 필요한 데이터만 요청</td></tr><tr><td>AI 외부 전송</td><td>건강 요약이 제3자 AI로 전송될 수 있음</td><td>전송 전 미리보기, 명시적 동의, 항목별 선택</td></tr><tr><td>의료적 표현</td><td>진단/치료처럼 보이면 심사 리스크</td><td>참고용 컨디션 지표로 표현</td></tr><tr><td>광고 위치</td><td>민감 정보 화면 광고는 사용자 신뢰 저하</td><td>기록/AI/설정 화면 광고 제외</td></tr><tr><td>개인화 광고</td><td>건강 관심사 기반 타겟팅은 민감</td><td>건강 데이터 기반 타겟팅 금지, 동의 기반 운영</td></tr><tr><td>개인정보 처리방침</td><td>광고 SDK/AI/건강 데이터 흐름 미기재 시 리스크</td><td>외부 서비스별 데이터 처리 설명 추가</td></tr></tbody></table></div><hr><h2 id="23-개발-우선순위">23. 개발 우선순위</h2><h3 id="23-1-1차-개발-순서">23-1. 1차 개발 순서</h3><div class="table-wrap"><table><thead><tr><th>순서</th><th>작업</th><th>설명</th></tr></thead><tbody><tr><td>1</td><td>Flutter 프로젝트 구성</td><td>라우팅, 테마, 상태관리, 기본 구조</td></tr><tr><td>2</td><td>로컬 DB 설계</td><td>Drift 기반 테이블 구성</td></tr><tr><td>3</td><td>HealthKit / Health Connect 연동</td><td>권한 요청 및 데이터 조회</td></tr><tr><td>4</td><td>일별 건강 데이터 요약</td><td>HRV, 심박, 수면, 운동 요약 저장</td></tr><tr><td>5</td><td>스트레스 지수 엔진</td><td>개인 기준값 기반 점수 계산</td></tr><tr><td>6</td><td>회복 점수 엔진</td><td>스트레스와 반대 개념 점수 계산</td></tr><tr><td>7</td><td>오늘 화면</td><td>지수, 원인, 추천 행동 표시</td></tr><tr><td>8</td><td>감정 기록</td><td>기분, 태그, 메모 입력</td></tr><tr><td>9</td><td>주간 트렌드</td><td>최근 7일 그래프와 요약</td></tr><tr><td>10</td><td>AI 설정 / 호출</td><td>Provider, API Key, 전송 미리보기</td></tr><tr><td>11</td><td>AdMob 배너</td><td>오늘/트렌드 화면 제한 노출</td></tr><tr><td>12</td><td>개인정보 / 삭제 기능</td><td>데이터 삭제, 권한 안내, 고지 문구</td></tr><tr><td>13</td><td>테스트 / 스토어 준비</td><td>정책 문구, 스크린샷, 설명문 정리</td></tr></tbody></table></div><h3 id="23-2-1인-개발-예상-일정">23-2. 1인 개발 예상 일정</h3><div class="table-wrap"><table><thead><tr><th>기간</th><th>목표</th></tr></thead><tbody><tr><td>1주차</td><td>기획 확정, 앱 구조, DB 초안</td></tr><tr><td>2주차</td><td>HealthKit / Health Connect 연동</td></tr><tr><td>3주차</td><td>일별 데이터 요약, 기준값 계산</td></tr><tr><td>4주차</td><td>스트레스 지수 / 회복 점수 엔진</td></tr><tr><td>5주차</td><td>오늘 화면, 감정 기록 화면</td></tr><tr><td>6주차</td><td>트렌드 화면, AI 설정 화면</td></tr><tr><td>7주차</td><td>AI 조언, AdMob 배너, 개인정보 화면</td></tr><tr><td>8주차</td><td>테스트, 데이터 부족 예외처리, 스토어 준비</td></tr></tbody></table></div><hr><h2 id="24-최종-추천-방향">24. 최종 추천 방향</h2><blockquote><p><strong>BodySignal — 스트레스 지수를 중심으로 한 로컬 기반 AI 컨디션 코치</strong></p></blockquote><h3 id="24-1-최종-앱-정의">24-1. 최종 앱 정의</h3><pre><code>BodySignal은 HRV, 심박, 수면, 운동, 감정 기록을 바탕으로
+오늘의 스트레스 지수와 회복 상태를 알려주는 Flutter 기반 iOS/Android 앱이다.
+
+앱 자체 서버 없이 로컬 저장을 기본으로 하며,
+사용자가 직접 선택한 AI와 API Key를 통해 컨디션 조언을 받을 수 있다.
+
+무료 사용자는 일부 화면에서 Google AdMob 광고를 볼 수 있고,
+Pro 사용자는 광고 없이 고급 분석 기능을 사용할 수 있다.</code></pre><h3 id="24-2-핵심-기능-5개">24-2. 핵심 기능 5개</h3><div class="table-wrap"><table><thead><tr><th>핵심 기능</th><th>설명</th></tr></thead><tbody><tr><td>스트레스 지수</td><td>HRV, 심박, 수면, 운동, 감정 기반 0~100 점수</td></tr><tr><td>회복 점수</td><td>오늘 무리해도 되는지 알려주는 회복 상태</td></tr><tr><td>원인 분석</td><td>왜 스트레스가 높아졌는지 설명</td></tr><tr><td>감정 기록</td><td>사용자가 직접 감정과 원인 기록</td></tr><tr><td>AI 코치</td><td>사용자가 직접 등록한 AI로 조언 받기</td></tr></tbody></table></div><h3 id="24-3-수익화-핵심">24-3. 수익화 핵심</h3><div class="table-wrap"><table><thead><tr><th>구분</th><th>방향</th></tr></thead><tbody><tr><td>무료</td><td>오늘 지수, 7일 트렌드, 감정 기록, 광고 표시</td></tr><tr><td>Pro</td><td>광고 제거, 월간/연간 분석, AI 리포트, 데이터 내보내기</td></tr><tr><td>광고</td><td>건강 데이터 기반 타겟팅 금지, 민감 화면 미노출</td></tr><tr><td>AI</td><td>사용자 API Key 방식으로 앱의 AI 비용 부담 없음</td></tr></tbody></table></div><h3 id="24-4-기획-요약">24-4. 기획 요약</h3><pre><code>스트레스 지수를 메인으로 보여주되, 스트레스만 보여주지 않는다.
+
+HRV, 심박, 수면, 운동, 감정 기록을 함께 분석한다.
+사용자는 오늘 왜 피곤한지, 운동해도 되는지, 쉬어야 하는지 알 수 있다.
+
+서버는 없다.
+건강 데이터는 로컬에 저장한다.
+AI는 사용자가 직접 선택하고 직접 API Key를 넣는다.
+
+무료 사용자는 광고를 통해 부담 없이 시작할 수 있고,
+Pro 사용자는 광고 없이 더 깊은 분석을 사용할 수 있다.
+
+앱의 핵심 가치는 &quot;스트레스 점수&quot;가 아니라
+&quot;오늘 내 몸을 어떻게 다뤄야 하는지 알려주는 것&quot;이다.</code></pre><hr><h2 id="25-참고-공식-문서">25. 참고 공식 문서</h2><p>아래 문서는 실제 개발 및 스토어 출시 전 반드시 다시 확인한다.</p><div class="table-wrap"><table><thead><tr><th>구분</th><th>문서</th></tr></thead><tbody><tr><td>Apple App Store Review Guidelines</td><td><a href="https://developer.apple.com/app-store/review/guidelines/" target="_blank" rel="noreferrer">https://developer.apple.com/app-store/review/guidelines/</a></td></tr><tr><td>Apple HealthKit Documentation</td><td><a href="https://developer.apple.com/documentation/healthkit" target="_blank" rel="noreferrer">https://developer.apple.com/documentation/healthkit</a></td></tr><tr><td>Android Health Connect Get Started</td><td><a href="https://developer.android.com/health-and-fitness/health-connect/get-started" target="_blank" rel="noreferrer">https://developer.android.com/health-and-fitness/health-connect/get-started</a></td></tr><tr><td>Publish your health app on Google Play</td><td><a href="https://developer.android.com/health-and-fitness/health-connect/publish" target="_blank" rel="noreferrer">https://developer.android.com/health-and-fitness/health-connect/publish</a></td></tr><tr><td>Google Play Health Content and Services Policy</td><td><a href="https://support.google.com/googleplay/android-developer/answer/16679511" target="_blank" rel="noreferrer">https://support.google.com/googleplay/android-developer/answer/16679511</a></td></tr><tr><td>Google Play Android Health Permissions FAQ</td><td><a href="https://support.google.com/googleplay/android-developer/answer/12991134" target="_blank" rel="noreferrer">https://support.google.com/googleplay/android-developer/answer/12991134</a></td></tr><tr><td>Google AdMob Publisher Policies</td><td><a href="https://support.google.com/admob/answer/10502938" target="_blank" rel="noreferrer">https://support.google.com/admob/answer/10502938</a></td></tr><tr><td>Google Health in personalized advertising policy</td><td><a href="https://support.google.com/adspolicy/answer/16701855" target="_blank" rel="noreferrer">https://support.google.com/adspolicy/answer/16701855</a></td></tr><tr><td>Google API Services User Data Policy</td><td><a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noreferrer">https://developers.google.com/terms/api-services-user-data-policy</a></td></tr></tbody></table></div><hr><p><em>본 문서는 앱 기획 보완안이며, 실제 개발 착수 전 화면설계서, DB 설계서, 개인정보 처리방침, 스토어 심사 문구로 구체화가 필요하다.</em></p>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
