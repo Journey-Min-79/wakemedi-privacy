@@ -1,0 +1,32 @@
+{
+  "date": "YYYY-MM-DD",
+  "marketStatus": "CLOSED",
+
+  "indices": {
+    "KOSPI":  { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "advancing": 0, "unchanged": 0, "declining": 0 },
+    "KOSDAQ": { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "advancing": 0, "unchanged": 0, "declining": 0 },
+    "USDKRW": { "close": 0 }
+  },
+
+  "marketInvestor": {
+    "KOSPI":  { "foreign": 0, "institution": 0, "individual": 0 },
+    "KOSDAQ": { "foreign": 0, "institution": 0, "individual": 0 }
+  },
+
+  "stocks": {
+    "005930": { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "marketCap": 0, "per": null, "pbr": null, "eps": null, "dividendYield": null, "foreignOwnershipRate": null, "investor": { "foreign": 0, "institution": 0, "individual": 0 } },
+    "000660": { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "marketCap": 0, "per": null, "pbr": null, "eps": null, "dividendYield": null, "foreignOwnershipRate": null, "investor": { "foreign": 0, "institution": 0, "individual": 0 } },
+    "066570": { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "marketCap": 0, "per": null, "pbr": null, "eps": null, "dividendYield": null, "foreignOwnershipRate": null, "investor": { "foreign": 0, "institution": 0, "individual": 0 } },
+    "064400": { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "marketCap": 0, "per": null, "pbr": null, "eps": null, "dividendYield": null, "foreignOwnershipRate": null, "investor": { "foreign": 0, "institution": 0, "individual": 0 } },
+    "242040": { "open": 0, "high": 0, "low": 0, "close": 0, "volume": 0, "tradingValue": 0, "marketCap": 0, "per": null, "pbr": null, "eps": null, "dividendYield": null, "foreignOwnershipRate": null, "investor": { "foreign": 0, "institution": 0, "individual": 0 } }
+  },
+
+  "news": {
+    "market": [],
+    "005930": [],
+    "000660": [],
+    "066570": [],
+    "064400": [],
+    "242040": []
+  }
+}
