@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>주식 시황 대시보드</title>
+
+  <!-- 폰트 (Pretendard, CDN) -->
+  <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+  <!-- 차트 라이브러리 (이후 Phase에서 사용) -->
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- 전역 스타일 -->
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+  <!-- ===================== 좌측 아이콘 사이드바 ===================== -->
+  <nav class="sidebar" aria-label="섹션 내비게이션">
+    <div class="brand" title="주식 시황 대시보드">S</div>
+
+    <button class="nav-item" data-target="sec-brief" type="button">
+      <!-- 오늘의 브리핑 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+      <span class="tip">오늘의 브리핑</span>
+    </button>
+    <button class="nav-item" data-target="sec-market" type="button">
+      <!-- 시장 개요 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 15l3-4 3 3 4-6"/></svg>
+      <span class="tip">시장 개요</span>
+    </button>
+    <button class="nav-item" data-target="sec-flow" type="button">
+      <!-- 투자자 수급 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V9M10 20V4M16 20v-7M22 20H2"/></svg>
+      <span class="tip">투자자 수급</span>
+    </button>
+    <button class="nav-item" data-target="sec-stocks" type="button">
+      <!-- 관심종목 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></svg>
+      <span class="tip">관심종목 5선</span>
+    </button>
+    <button class="nav-item" data-target="sec-news" type="button">
+      <!-- 뉴스 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h7M7 12h10M7 16h10"/></svg>
+      <span class="tip">뉴스</span>
+    </button>
+    <button class="nav-item" data-target="sec-ai" type="button">
+      <!-- AI 분석 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a3 3 0 0 1 3 3 3 3 0 0 1 0 6 3 3 0 0 1-6 0 3 3 0 0 1 0-6 3 3 0 0 1 3-3z"/><path d="M12 14v8M8 22h8"/></svg>
+      <span class="tip">AI 분석 리포트</span>
+    </button>
+    <button class="nav-item" data-target="sec-heatmap" type="button">
+      <!-- 히트맵 -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="tip">섹터 히트맵</span>
+    </button>
+  </nav>
+
+  <nav class="bottom-nav" aria-label="모바일 주요 화면">
+    <button class="bottom-item active" data-target="sec-brief" type="button">
+      <span>홈</span>
+    </button>
+    <button class="bottom-item" data-target="sec-stocks" type="button">
+      <span>종목</span>
+    </button>
+    <button class="bottom-item" data-target="sec-market" type="button">
+      <span>시장</span>
+    </button>
+    <button class="bottom-item" data-target="sec-flow" type="button">
+      <span>수급</span>
+    </button>
+    <button class="bottom-item" data-target="sec-news" type="button">
+      <span>뉴스</span>
+    </button>
+  </nav>
+
+  <!-- ===================== 상단 헤더 (고정) ===================== -->
+  <header class="header">
+    <div class="title-wrap">
+      <div>
+        <div class="title">주식 시황 대시보드</div>
+        <div class="subtitle">Stock Market Dashboard</div>
+      </div>
+      <span id="market-badge" class="market-badge closed"><span class="dot"></span>장마감</span>
+    </div>
+
+    <div class="tickers">
+      <div class="ticker" id="ticker-kospi"></div>
+      <div class="ticker" id="ticker-kosdaq"></div>
+      <div class="ticker" id="ticker-usdkrw"></div>
+    </div>
+  </header>
+
+  <!-- 데이터 신선도 안내줄 -->
+  <div class="freshness-line">
+    <span id="freshness-updated">— 데이터 기준</span>
+    <span id="stale-banner" class="stale-banner"></span>
+  </div>
+
+  <!-- ===================== 메인 ===================== -->
+  <main class="main">
+
+    <!-- 섹션 T — 오늘의 브리핑 (개인투자자용 요약) -->
+    <section id="sec-brief" class="section">
+      <div class="section-head">
+        <span class="s-label">TODAY</span>
+        <h2>오늘의 브리핑</h2>
+        <span class="s-desc" id="brief-date">데이터 기반 자동 요약 · 3분 안에 시장 파악</span>
+      </div>
+      <div class="grid">
+        <!-- T1. 시장 온도계 -->
+        <div class="panel app-hero col-5">
+          <div class="panel-title">오늘 시장 <span class="hint">지수·시장폭·수급 종합</span></div>
+          <div id="brief-mood"></div>
+        </div>
+        <!-- T2. 오늘의 인사이트 -->
+        <div class="panel col-7">
+          <div class="panel-title">핵심 시그널 <span class="hint">중요도 높은 항목만 먼저 표시</span></div>
+          <div id="brief-insights"></div>
+        </div>
+        <!-- T3. 관심종목 한눈에 -->
+        <div class="panel col-12">
+          <div class="panel-title">관심종목 한눈에 <span class="hint">행 클릭 시 상세로 이동</span></div>
+          <div class="table-scroll"><table class="watch-table" id="brief-watchlist"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 A — 시장 개요 -->
+    <section id="sec-market" class="section">
+      <div class="section-head">
+        <span class="s-label">A</span>
+        <h2>시장 개요</h2>
+        <span class="s-desc">코스피 · 코스닥 2년 추세와 당일 시장 현황</span>
+      </div>
+      <div class="grid">
+        <!-- A1. 지수 캔들차트 -->
+        <div class="panel col-7" style="min-height:360px">
+          <div class="panel-title">
+            지수 캔들차트
+            <div class="seg" id="market-tabs" style="margin-left:auto">
+              <button type="button" data-tab="KOSPI" class="active">코스피</button>
+              <button type="button" data-tab="KOSDAQ">코스닥</button>
+            </div>
+            <div class="seg" id="period-seg">
+              <button type="button" data-period="1M">1M</button>
+              <button type="button" data-period="3M">3M</button>
+              <button type="button" data-period="6M">6M</button>
+              <button type="button" data-period="1Y">1Y</button>
+              <button type="button" data-period="2Y" class="active">2Y</button>
+            </div>
+          </div>
+          <div class="chart-box" style="height:300px">
+            <div id="candle-chart" style="height:100%"></div>
+            <div id="candle-empty" class="chart-empty" hidden>차트 데이터가 없습니다</div>
+          </div>
+        </div>
+
+        <div class="col-5" style="display:flex;flex-direction:column;gap:var(--gap)">
+          <!-- A2. 지수 비교 -->
+          <div class="panel" style="flex:1">
+            <div class="panel-title">지수 비교 <span class="hint">시작점 = 0%</span></div>
+            <div class="chart-box" style="height:120px"><canvas id="cmp-chart"></canvas></div>
+          </div>
+          <!-- A3. 등락 현황 -->
+          <div class="panel" style="flex:1">
+            <div class="panel-title">등락 현황 <span class="hint" id="breadth-market">코스피</span></div>
+            <div id="breadth"></div>
+          </div>
+          <!-- A4. 거래대금 -->
+          <div class="panel" style="flex:1">
+            <div class="panel-title">거래대금 <span class="hint">최근 20거래일</span></div>
+            <div id="tv-summary"></div>
+            <div class="chart-box" style="height:56px;margin-top:8px"><canvas id="tv-chart"></canvas></div>
+          </div>
+        </div>
+        <div class="panel col-12">
+          <div class="panel-title">시장 체크포인트 <span class="hint">가격 · 거래대금 · 시장폭 · 환율</span></div>
+          <div id="market-checkpoints" class="signal-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 B — 투자자 수급 -->
+    <section id="sec-flow" class="section">
+      <div class="section-head">
+        <span class="s-label">B</span>
+        <h2>투자자 수급</h2>
+        <span class="s-desc">외국인 · 기관 · 개인 · 기타법인 순매수 흐름</span>
+      </div>
+      <div class="grid">
+        <!-- B1. 누적 순매수 -->
+        <div class="panel col-8" style="min-height:300px">
+          <div class="panel-title">
+            선택 기간 누적 순매수
+            <div class="seg compact" id="flow-period-seg" style="margin-left:auto">
+              <button type="button" data-flow-period="1M">1M</button>
+              <button type="button" data-flow-period="3M" class="active">3M</button>
+              <button type="button" data-flow-period="6M">6M</button>
+              <button type="button" data-flow-period="1Y">1Y</button>
+            </div>
+            <span class="hint" id="flow-market-label">코스피 · 3M · 억원</span>
+          </div>
+          <div id="cum-flow-totals" class="flow-totals"></div>
+          <div class="chart-box" style="height:250px">
+            <canvas id="cum-flow-chart"></canvas>
+            <div id="cum-flow-empty" class="chart-empty" hidden>수급 데이터가 없습니다</div>
+          </div>
+        </div>
+        <!-- B3. 수급 요약 카드 3장 -->
+        <div class="panel col-4">
+          <div class="panel-title">수급 요약 <span class="hint">순매수 <span class="up">빨강</span> / 순매도 <span class="down">파랑</span></span></div>
+          <div id="flow-summary"></div>
+        </div>
+        <!-- B2. 일별 순매수 -->
+        <div class="panel col-12">
+          <div class="panel-title">일별 순매수 <span class="hint">최근 20거래일</span></div>
+          <div class="chart-box" style="height:160px">
+            <canvas id="daily-flow-chart"></canvas>
+            <div id="daily-flow-empty" class="chart-empty" hidden>수급 데이터가 없습니다</div>
+          </div>
+        </div>
+        <div class="panel col-12">
+          <div class="panel-title">수급 해석 <span class="hint">누가 사고 누가 파는지 요약</span></div>
+          <div id="flow-readout" class="signal-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 C — 관심종목 5선 -->
+    <section id="sec-stocks" class="section">
+      <div class="section-head">
+        <span class="s-label">C</span>
+        <h2>관심종목 5선</h2>
+        <span class="s-desc">비교 중심 · 종목 선택 시 상세 패널 열림</span>
+      </div>
+      <div id="stock-cards" class="stock-cards"><!-- C1: STOCKS_DATA.stocks 로 렌더 --></div>
+      <div class="panel stock-compare-panel">
+        <div class="panel-title">종목 비교 <span class="hint">수익률 · 수급 · 52주 위치</span></div>
+        <div class="table-scroll"><table class="watch-table" id="stock-compare-table"></table></div>
+      </div>
+      <div id="stock-detail" class="stock-detail"><!-- C2: 선택 종목 상세 --></div>
+    </section>
+
+    <!-- 섹션 D — 뉴스 -->
+    <section id="sec-news" class="section">
+      <div class="section-head">
+        <span class="s-label">D</span>
+        <h2>뉴스</h2>
+        <span class="s-desc">전체 · 시장 · 종목별 / 국내 · 해외</span>
+      </div>
+      <div class="grid">
+        <div class="panel col-4">
+          <div class="panel-title">뉴스 브리핑 <span class="hint">최신 흐름</span></div>
+          <div id="news-brief" class="news-brief"></div>
+        </div>
+        <div class="panel col-8">
+          <div class="news-toolbar">
+            <div class="seg wrap" id="news-tabs"><!-- 전체 · 시장 · 종목 5 --></div>
+            <div class="seg" id="news-scope" style="margin-left:auto">
+              <button type="button" data-scope="all" class="active">전체</button>
+              <button type="button" data-scope="domestic">국내</button>
+              <button type="button" data-scope="global">해외</button>
+            </div>
+          </div>
+          <div id="news-list-wrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 섹션 E — AI 분석 리포트 -->
+    <section id="sec-ai" class="section">
+      <div class="section-head">
+        <span class="s-label">E</span>
+        <h2>AI 분석 리포트</h2>
+        <span class="s-desc">기간별 누적 · 최신 자동 선택</span>
+      </div>
+      <div class="grid">
+        <div class="panel col-3" style="min-height:260px">
+          <div class="panel-title">기간 선택 <span class="hint">최신순</span></div>
+          <div id="analysis-periods"></div>
+        </div>
+        <div class="panel col-9" style="min-height:260px">
+          <div id="analysis-content"></div>
+        </div>
+      </div>
+      <div id="analysis-disclaimer" class="disclaimer"></div>
+    </section>
+
+    <!-- 섹션 F — 섹터 히트맵 -->
+    <section id="sec-heatmap" class="section">
+      <div class="section-head">
+        <span class="s-label">F</span>
+        <h2>섹터 히트맵</h2>
+        <span class="s-desc">섹터별 평균 등락률</span>
+      </div>
+      <div class="grid">
+        <div class="panel col-6">
+          <div class="panel-title">섹터별 등락 <span class="hint">종목 등락률 평균</span></div>
+          <div id="heatmap"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+
+  <!-- ===================== 데이터 (scripts/update_data.py 가 갱신) ===================== -->
+  <script src="data/market.js"></script>
+  <script src="data/stocks.js"></script>
+  <script src="data/news.js"></script>
+  <script src="data/analysis.js"></script>
+
+  <!-- 앱 로직 -->
+  <script src="assets/app.js"></script>
+</body>
+</html>
